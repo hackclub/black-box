@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>⬛</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <!--
+    ALEA IACTA EST
+  -->
+
+  <body>
+    <main>
+      <div id="black_box_container">
+        <div id="canvas_container">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div id="controls_container">
+          <button id="up" onpointerdown="fIu()" tabIndex="-1"></button>
+          <button id="down" onpointerdown="fId()" tabIndex="-1"></button>
+          <button id="left" onpointerdown="fIl()" tabIndex="-1"></button>
+          <button id="right" onpointerdown="fIr()" tabIndex="-1"></button>
+          <button id="select" onpointerdown="fIs()" tabIndex="-1"></button>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/victus@0.12.0/build/victus.min.js"></script>
+    <script src="http://unpkg.com/tone"></script>
+    <script src="script.js"></script>
+  </body>
+
+</html>

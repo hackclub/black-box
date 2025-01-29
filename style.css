@@ -1,0 +1,102 @@
+* {
+  margin:0;
+  border:0;
+  box-sizing:border-box;
+  padding:0
+}
+
+/*
+  AUDERE EST FACERE
+*/
+
+html {
+  height:100%;
+  background-color:black;
+  scrollbar-color:#c8c8c8 #dedede;
+  scrollbar-width:thin
+}
+
+body {
+  background-color:black;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  line-height:1.6;
+  color:#f1f1f1;
+  min-height:100%
+}
+
+main {
+  display:flex;
+  width:100vw;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+}
+
+#black_box_container {
+  background-color:black;
+  justify-items:center;
+}
+
+#canvas_container {
+  width:240px;
+  height:240px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#canvas {
+  background-color:#222;
+  border:2px solid #444;
+  filter:drop-shadow(0px 0px 10px #444);
+}
+
+#controls_container {
+  display:grid;
+  grid-template-rows:1fr 1fr 1fr;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  justify-items:center;
+}
+
+button {
+  width:20px;
+  height:20px;
+  border:2px solid #aaa;
+  background-color:#222;
+  margin:8px;
+  border-radius:50%;
+  filter:drop-shadow(0px 0px 10px #999);
+}
+
+button:hover {
+  background-color:#444;
+}
+
+button:active, button.active {
+  background-color:#666;
+}
+
+#up {
+  grid-row:1;
+  grid-column:2;
+}
+
+#down {
+  grid-row:3;
+  grid-column:2;
+}
+
+#left {
+  grid-row:2;
+  grid-column:1;
+}
+
+#right {
+  grid-row:2;
+  grid-column:3;
+}
+
+#select {
+  grid-row:1;
+  grid-column:4;
+}
