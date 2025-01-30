@@ -46,16 +46,16 @@ main {
 }
 
 #canvas {
-  background-color:#222;
+  width:160px;
+  height:160px;
   border:2px solid #444;
   filter:drop-shadow(0px 0px 10px #444);
 }
 
 #controls_container {
   display:grid;
-  grid-template-rows:1fr 1fr 1fr;
-  grid-template-columns:1fr 1fr 1fr 1fr;
-  justify-items:center;
+  grid-template-rows:36px 36px 36px;
+  grid-template-columns:36px 36px 36px 36px;
 }
 
 button {
