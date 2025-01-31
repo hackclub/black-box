@@ -9,6 +9,26 @@ document.addEventListener('DOMContentLoaded', victus.setup({
   AERE PERENNIUS
 */
 
+const eG = document.getElementById('gesture_container');
+const eM = document.getElementById('canvas_container');
+const eC = document.getElementById('controls_container');
+
+eG.onclick = function() {
+  piezo = new Piezo;
+  for (let eX of [eG, eM, eC]) {
+    let cf = eX.classList.contains('dv') ? 'dv' : 'dn';
+    let ct = cf === 'dv' ? 'dn' : 'dv';
+    eX.classList.replace(cf, ct);
+    eX.style.animation = ct === 'dv' ? '1s linear 0s fade-in' : '';
+  }
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      piezo?.tone([Note.A4, Note.E5, Note.A5][i], 63);
+    }, (i * 125) + 50);
+  }
+  window.requestAnimationFrame(fI);
+}
+
 let aI = [];
 
 const DH = [126, 255, 189, 189, 255, 189, 195, 126];
@@ -184,7 +204,7 @@ function fFC () {
         victus.clear();
         matrix.set_from_integers(DX);
         matrix.draw_to_canvas();
-        piezo.tone(Note.C6, 125);
+        piezo?.tone(Note.C6, 125);
       }, (i * 250) + 500);
       setTimeout(() => {
         victus.clear();
@@ -225,17 +245,10 @@ function fXX () {
   }
 }
 
-function fTC () {
-  if (piezo === null) {
-    piezo = new Piezo;
-  }
-}
-
 function fIu () {
   aI.length === 5 && aI.shift();
   aI.push(0);
-  fTC();
-  piezo.tone(Note.A4, 125);
+  piezo?.tone(Note.A4, 125);
   fUD(DH, document.getElementById('up'));
   fFC();
 }
@@ -243,8 +256,7 @@ function fIu () {
 function fId () {
   aI.length === 5 && aI.shift();
   aI.push(1);
-  fTC();
-  piezo.tone(Note.C5, 125);
+  piezo?.tone(Note.C5, 125);
   fUD(DS, document.getElementById('down'));
   fFC();
 }
@@ -252,8 +264,7 @@ function fId () {
 function fIl () {
   aI.length === 5 && aI.shift();
   aI.push(2);
-  fTC();
-  piezo.tone(Note.E5, 125);
+  piezo?.tone(Note.E5, 125);
   fUD(DO, document.getElementById('left'));
   fFC();
 }
@@ -261,8 +272,7 @@ function fIl () {
 function fIr () {
   aI.length === 5 && aI.shift();
   aI.push(3);
-  fTC();
-  piezo.tone(Note.A5, 125);
+  piezo?.tone(Note.A5, 125);
   fUD(DA, document.getElementById('right'));
   fFC();
 }
@@ -270,8 +280,7 @@ function fIr () {
 function fIs () {
   aI.length === 5 && aI.shift();
   aI.push(4);
-  fTC();
-  piezo.tone(Note.C6, 125);
+  piezo?.tone(Note.C6, 125);
   fUD(DX, document.getElementById('select'));
   fFC();
 }
@@ -311,5 +320,3 @@ const sS = matrix.row(4).slice(1, 6);
 
 fUT();
 let IfUT = setInterval(fUT, 1000);
-
-window.requestAnimationFrame(fI);

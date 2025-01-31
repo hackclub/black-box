@@ -37,10 +37,33 @@ main {
   justify-items:center;
 }
 
+#gesture_container {
+  --bb-display:flex;
+  height:60px;
+  width:60px;
+  border:2px dotted #999;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  opacity:75%;
+}
+
+#gesture_container:hover {
+  opacity:100%;
+  cursor:pointer;
+}
+
+#gesture {
+  font-size:24px;
+  width:min-content;
+  height:min-content;
+  user-select:none;
+}
+
 #canvas_container {
+  --bb-display:flex;
   width:240px;
   height:240px;
-  display:flex;
   align-items:center;
   justify-content:center;
 }
@@ -53,7 +76,7 @@ main {
 }
 
 #controls_container {
-  display:grid;
+  --bb-display:grid;
   grid-template-rows:36px 36px 36px;
   grid-template-columns:36px 36px 36px 36px;
 }
@@ -99,4 +122,36 @@ button:active, button.active {
 #select {
   grid-row:1;
   grid-column:4;
+}
+
+.dn {
+  display:none;
+  opacity:0;
+}
+
+.dv {
+  display:var(--bb-display);
+  opacity:1;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity:0
+  }
+  50% {
+    opacity:0
+  }
+  100% {
+    opacity:1
+  }
+}
+
+@media screen and (max-width:768px) {
+  #gesture_container, #controls_container {
+    display:none
+  }
+  #canvas_container {
+    display:var(--bb-display);
+    opacity:1
+  }
 }
