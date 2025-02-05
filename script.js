@@ -308,7 +308,7 @@ function fI () {
   window.requestAnimationFrame(fI);
 }
 
-const E = new Date(Date.UTC(2025, 1, 5, 15, 0, 0, 0));
+const E = new Date(Date.UTC(2025, 1, 5, 18, 0, 0, 0));
 
 let matrix = new Matrix;
 let piezo = null;
