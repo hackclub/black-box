@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>⬛</title>
+    <title>Black Box</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
   </head>
 
@@ -13,15 +16,17 @@
   -->
 
   <body>
-    <main>
+    <div id="hero">
+      <h1>Black Box</h1>
+      <h4><a class="red disabled">Editor</a> &middot; <a class="yellow disabled">Submit</a> &middot; <a class="green disabled">Gallery</a></h4>
       <div id="black_box_container">
-        <div id="gesture_container" class="dv">
+        <div id="gesture_container">
           <p id="gesture">&#x1f50a;</p>
         </div>
-        <div id="canvas_container" class="dn">
+        <div id="canvas_container" class="oh">
           <canvas id="canvas"></canvas>
         </div>
-        <div id="controls_container" class="dn">
+        <div id="controls_container" class="oh">
           <button id="up" onpointerdown="fIu()" tabIndex="-1"></button>
           <button id="down" onpointerdown="fId()" tabIndex="-1"></button>
           <button id="left" onpointerdown="fIl()" tabIndex="-1"></button>
@@ -29,7 +34,66 @@
           <button id="select" onpointerdown="fIs()" tabIndex="-1"></button>
         </div>
       </div>
+      <img id="arrow" src="assets/arrow-down.svg">
+    </div>
+    <main>
+      <div class="section">
+        <h1 class="red">The pitch</h1>
+        <h4 class="red">Simplex sigillum veri</h4>
+        <p>
+          People are at their <b>most creative</b> when they are <i>most constrained.</i>
+          Adding restrictions can help you find unique ideas and enable you to put them into action.
+          <br>
+          <b>What if there was an event that took this to the extreme?</b>
+        </p>
+        <p>
+          <b>Black Box</b> is a <a href="https://ysws.hackclub.com" target="_blank">You Ship, We Ship</a> event about <i>constraints</i>.
+          <br>
+          Write <b>an interactive program for an 8x8 LED matrix</b>, and we'll send you <i>a portable device to run it on</i>.
+        </p>
+      </div>
+      <div class="section">
+        <h1 class="yellow">The rules</h1>
+        <h4 class="yellow">Nihil boni sine labore</h4>
+        <ol>
+          <li>
+            <b>Make something.</b>
+            <br>
+            Use <a class="disabled">the editor</a> (coming soon) to write an interactive program.
+            <br>
+            You only get <b>64 pixels</b> and <b>5 buttons</b> to play with, so you'll have to think carefully about how it should work!
+          </li>
+          <li>
+            <b>Tell us about it.</b>
+            <br>
+            Join <a href="https://hackclub.slack.com/archives/C08APN1CKEJ" target="_blank">#black-box</a> on the Hack Club Slack and let us know what you made!
+          </li>
+          <li>
+            <b>Get a prize!</b>
+            <br>
+            If you finish creating a program and <b>submit it</b> by the end date (to be announced), we'll send you a portable device to run it on!
+            <br>
+            The best submissions will receive a rare <b class="blue">blue LED matrix</b>.
+          </li>
+        </ol>
+      </div>
+      <div class="section">
+        <h1 class="green">The guide</h1>
+        <h4 class="green">Viam sapientiae monstrabo tibi</h4>
+        <p>Coming soon...</p>
+      </div>
     </main>
+    <center>
+      <h4 class="closer">Absens haeres non erit</h4>
+      <h2>Fiat lux</h2>
+      <hr>
+    </center>
+    <footer>
+      <center id="footer">
+        <p><span class="muted">(c)</span> 2025 <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a></p>
+        <p>Made with <img id="love" src="assets/heart.svg"> by <a href="https://github.com/sporeball" target="_blank">@lux</a></p>
+      </center>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/victus@0.12.0/build/victus.min.js"></script>
     <script src="https://unpkg.com/tone"></script>
     <script src="script.js"></script>

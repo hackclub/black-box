@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', victus.setup({
   id: 'canvas',
-  w: 160,
-  h: 160,
+  w: 120,
+  h: 120,
   color: '#222',
 }));
 
@@ -15,12 +15,11 @@ const eC = document.getElementById('controls_container');
 
 eG.onclick = function() {
   piezo = new Piezo;
-  for (let eX of [eG, eM, eC]) {
-    let cf = eX.classList.contains('dv') ? 'dv' : 'dn';
-    let ct = cf === 'dv' ? 'dn' : 'dv';
-    eX.classList.replace(cf, ct);
-    eX.style.animation = ct === 'dv' ? '1s linear 0s fade-in' : '';
-  }
+  eG.classList.add('dn');
+  eM.classList.replace('oh', 'of');
+  eC.classList.replace('oh', 'of');
+  eM.style.animation = '1s linear 0s fade-in';
+  eC.style.animation = '1s linear 0s fade-in';
   for (let i = 0; i < 3; i++) {
     setTimeout(() => {
       piezo?.tone([Note.A4, Note.E5, Note.A5][i], 63);
@@ -111,7 +110,7 @@ class Matrix {
           victus.ctx.fillStyle = '#444';
         }
         victus.ctx.beginPath();
-        victus.ctx.ellipse((x * 20) + 10, (y * 20) + 10, 7, 7, 0, 0, 2 * Math.PI);
+        victus.ctx.ellipse((x * 15) + 8, (y * 15) + 8, 6, 6, 0, 0, 2 * Math.PI);
         victus.ctx.fill();
       }
     }
@@ -308,7 +307,14 @@ function fI () {
   window.requestAnimationFrame(fI);
 }
 
-const E = new Date(Date.UTC(2025, 1, 5, 18, 0, 0, 0));
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+  }
+});
+
+// const E = new Date(Date.UTC(2025, 1, 5, 18, 0, 0, 0));
+const E = new Date(Date.UTC(2025, 1, 8, 15, 0, 0, 0));
 
 let matrix = new Matrix;
 let piezo = null;

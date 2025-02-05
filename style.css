@@ -9,6 +9,11 @@
   AUDERE EST FACERE
 */
 
+:root {
+  --color:#eee;
+  --dark-color:#999;
+}
+
 html {
   height:100%;
   background-color:black;
@@ -20,25 +25,93 @@ body {
   background-color:black;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   line-height:1.6;
-  color:#f1f1f1;
+  color:var(--color);
   min-height:100%
 }
 
+p, b, h1, h2, h4, span {
+  color:var(--color)
+}
+
+main p {
+  margin-bottom:16px;
+}
+
+b {
+  --color:#fff;
+}
+
+h1, h2, h4 {
+  font-family:"Roboto Mono";
+  text-transform:uppercase;
+}
+
+h1, h2 {
+  text-shadow:0px 3px 3px var(--dark-color);
+  font-weight:300;
+}
+
+h4 {
+  margin-bottom:16px;
+  font-weight:100;
+}
+
+a {
+  --color:#72cff7;
+  --dark-color:#236b89;
+  color:var(--color);
+  border-bottom:1px solid var(--dark-color);
+  text-decoration:none;
+}
+
+a:hover:not(.disabled) {
+  border-bottom:2px solid var(--dark-color);
+}
+
+li {
+  margin-left:16px
+}
+
+ol li {
+  padding-bottom:16px
+}
+
+hr {
+  margin:1.5rem 0 0.75rem 0;
+  border-bottom:1px solid #999;
+  width:700px;
+}
+
 main {
+  margin:auto;
+  max-width:700px;
+  padding-bottom:60px
+}
+
+#hero {
   display:flex;
-  width:100vw;
-  height:100vh;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
+  height:90vh;
+}
+
+#gesture_container, #canvas_container, #controls_container {
+  display:var(--bb-display);
 }
 
 #black_box_container {
   background-color:black;
+  height:288px;
   justify-items:center;
+  align-content:center;
+  position:relative;
 }
 
 #gesture_container {
   --bb-display:flex;
+  position:absolute;
+  left:120px;
   height:60px;
   width:60px;
   border:2px dotted #999;
@@ -46,6 +119,8 @@ main {
   justify-content:center;
   border-radius:50%;
   opacity:75%;
+  z-index:1;
+  background-color:black;
 }
 
 #gesture_container:hover {
@@ -62,28 +137,28 @@ main {
 
 #canvas_container {
   --bb-display:flex;
-  width:240px;
-  height:240px;
+  width:180px;
+  height:180px;
   align-items:center;
   justify-content:center;
 }
 
 #canvas {
-  width:160px;
-  height:160px;
+  width:120px;
+  height:120px;
   border:2px solid #444;
   filter:drop-shadow(0px 0px 10px #444);
 }
 
 #controls_container {
   --bb-display:grid;
-  grid-template-rows:36px 36px 36px;
-  grid-template-columns:36px 36px 36px 36px;
+  grid-template-rows:30px 30px 30px;
+  grid-template-columns:30px 30px 30px 30px;
 }
 
-button {
-  width:20px;
-  height:20px;
+#controls_container button {
+  width:15px;
+  height:15px;
   border:2px solid #aaa;
   background-color:#222;
   margin:8px;
@@ -91,11 +166,11 @@ button {
   filter:drop-shadow(0px 0px 10px #999);
 }
 
-button:hover {
+#controls_container button:hover {
   background-color:#444;
 }
 
-button:active, button.active {
+#controls_container button:active, #controls_container button.active {
   background-color:#666;
 }
 
@@ -124,22 +199,89 @@ button:active, button.active {
   grid-column:4;
 }
 
-.dn {
-  display:none;
-  opacity:0;
+#arrow {
+  width:48px;
+  height:96px;
+  filter:drop-shadow(0px 3px 3px #fff);
+  animation:arrow 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
-.dv {
-  display:var(--bb-display);
+#footer {
+  height:100px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+#love {
+  position:relative;
+  top:4px;
+  width:18px;
+}
+
+.section {
+  margin:0 10px 50px 10px;
+}
+
+.red {
+  --color:#ef654d;
+  --dark-color:#763529;
+}
+
+.yellow {
+  --color:#fbb601;
+  --dark-color:#806624;
+}
+
+.green {
+  --color:#c7e916;
+  --dark-color:#6c7a24;
+}
+
+.blue {
+  --color:#72cff7;
+  --dark-color:#236b89;
+}
+
+.muted {
+  --color:#999;
+}
+
+.disabled {
+  text-decoration:line-through;
+}
+
+.closer {
+  margin-bottom:0;
+}
+
+.dn {
+  display:none !important;
+}
+
+.oh {
+  opacity:0.4;
+}
+
+.of {
   opacity:1;
+}
+
+@keyframes arrow {
+  0%, 100% {
+    transform:translateY(0)
+  }
+  50% {
+    transform:translateY(10px)
+  }
 }
 
 @keyframes fade-in {
   0% {
-    opacity:0
+    opacity:0.4
   }
   50% {
-    opacity:0
+    opacity:0.4
   }
   100% {
     opacity:1
