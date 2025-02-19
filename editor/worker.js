@@ -918,7 +918,8 @@ function new_emu () {
       while (
         matchWithCapturingGroups(
           body,
-          /blackbox\.sleep\((.+?)\)/g,
+          /(emu\.globals\.)?blackbox\.sleep\((.+?)\)/g,
+          '_',
           'ms',
         ) === true
       ) {

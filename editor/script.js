@@ -196,6 +196,7 @@ function new_worker () {
       oscillator.stop();
     }
   };
+  // TODO: this function doesn't work right
   worker.onerror = function (e) {
     error = e.message;
     e_status.className = 'error';
