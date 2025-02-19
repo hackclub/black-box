@@ -17,8 +17,9 @@
 html {
   height:100%;
   background-color:black;
-  scrollbar-color:#c8c8c8 #dedede;
-  scrollbar-width:thin
+  /* scrollbar-color:#c8c8c8 #dedede; */
+  scrollbar-color:#60606060 #00000000;
+  scrollbar-width:2px
 }
 
 body {
@@ -29,7 +30,7 @@ body {
   min-height:100%
 }
 
-p, b, h1, h2, h4, span {
+p, b, i, h1, h2, h4, h5, span {
   color:var(--color)
 }
 
@@ -37,7 +38,7 @@ main p {
   margin-bottom:16px;
 }
 
-b {
+b, i {
   --color:#fff;
 }
 
@@ -57,6 +58,7 @@ h4 {
 }
 
 a {
+  --bright-color:#bcebff;
   --color:#72cff7;
   --dark-color:#236b89;
   color:var(--color);
@@ -65,6 +67,7 @@ a {
 }
 
 a:hover:not(.disabled) {
+  color:var(--bright-color);
   border-bottom:2px solid var(--dark-color);
 }
 
@@ -224,27 +227,32 @@ main {
 }
 
 .red {
+  --bright-color:#fe9987;
   --color:#ef654d;
   --dark-color:#763529;
 }
 
 .yellow {
+  --bright-color:#fbd882;
   --color:#fbb601;
   --dark-color:#806624;
 }
 
 .green {
+  --bright-color:#e4f882;
   --color:#c7e916;
   --dark-color:#6c7a24;
 }
 
 .blue {
+  --bright-color:#bcebff;
   --color:#72cff7;
   --dark-color:#236b89;
 }
 
 .muted {
   --color:#999;
+  --dark-color:#666;
 }
 
 .disabled {
@@ -259,12 +267,39 @@ main {
   display:none !important;
 }
 
+.oz {
+  opacity:0;
+}
+
 .oh {
   opacity:0.4;
 }
 
 .of {
   opacity:1;
+}
+
+.in {
+  pointer-events:none !important;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance:none;
+  width:2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background:#aaa;
+  border-radius:6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:#00000000;
+}
+
+::-webkit-scrollbar-track {
+  background:#00000000;
+  border-radius:6px;
 }
 
 @keyframes arrow {
@@ -282,6 +317,18 @@ main {
   }
   50% {
     opacity:0.4
+  }
+  100% {
+    opacity:1
+  }
+}
+
+@keyframes fade-in-from-zero {
+  0% {
+    opacity:0
+  }
+  25% {
+    opacity:0
   }
   100% {
     opacity:1
