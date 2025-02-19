@@ -277,11 +277,11 @@ hr {
 }
 
 .boxed p.success {
-  background-color:#c7e91660;
+  background-color:#a7ec1260;
 }
 
 .boxed p.warning, .highlight {
-  background-color:#e9db1660;
+  background-color:#ffee0060;
 }
 
 #status.error {
