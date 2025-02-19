@@ -210,7 +210,9 @@ ___WHILE_${W}()`
       // global declarations are eval-ed immediately, because loops need to be able to inject them
       const def_type = ast_node_to_js(node.defType);
       let value;
-      if (node.value === undefined) {
+      if (node.defType.type === 'PointerType') {
+        value = '';
+      } else if (node.value === undefined) {
         value = '()';
       } else {
         let node_value_to_js = ast_node_to_js(node.value);
