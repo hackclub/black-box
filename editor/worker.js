@@ -154,6 +154,10 @@ function ast_node_to_js (node) {
       const index = ast_node_to_js(node.index);
       return `${value}[${index}]`;
     }
+    case 'PrefixExpression': {
+      const value = ast_node_to_js(node.value);
+      return `${node.operator}${value}`;
+    }
     case 'ExpressionStatement': {
       return ast_node_to_js(node.expression);
     }
