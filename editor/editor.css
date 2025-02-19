@@ -223,8 +223,8 @@ hr {
   padding:0
 }
 
-/* ignore color changes from /style.css */
-#controls_container button:hover, #controls_container button:active, #controls_container button.active {
+/* ignore some of the color changes from /style.css */
+#controls_container button:hover, #controls_container button:active {
   background-color:#222;
 }
 

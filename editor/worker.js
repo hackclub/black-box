@@ -1162,6 +1162,8 @@ function main () {
   emu.globals.main(emu);
 }
 
+// TODO: don't repeat yourself
+
 /**
  * Callback for `up` message.
  * Call the function in `blackbox->on_up`.

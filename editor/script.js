@@ -52,6 +52,11 @@ const e_editor_bottom_container = document.getElementById('editor_bottom_contain
 const e_cm_container = document.getElementById('cm_container');
 const e_docs_container = document.getElementById('docs_container');
 const e_black_box_container = document.getElementById('black_box_container');
+const e_up = document.getElementById('up');
+const e_down = document.getElementById('down');
+const e_left = document.getElementById('left');
+const e_right = document.getElementById('right');
+const e_select = document.getElementById('select');
 const e_info_container = document.getElementById('info_container');
 const e_info = document.getElementById('info');
 const e_toggle_running = document.getElementById('toggle_running');
@@ -59,8 +64,6 @@ const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
 const e_gesture_container = document.getElementById('gesture_container');
 const e_status = document.getElementById('status');
-
-// TODO: make it do that thing where the device buttons light up when you press them
 
 /**
  * Mock header contents.
@@ -271,15 +274,26 @@ function no_tone () {
  * Check the state of the buttons.
  */
 async function check_buttons () {
+  // TODO: don't repeat yourself
   if (victus.keys.ArrowUp?.press) {
+    e_up.className = 'active';
+    setTimeout(() => e_up.className = '', 125);
     await send_message('up').promise;
   } else if (victus.keys.ArrowDown?.press) {
+    e_down.className = 'active';
+    setTimeout(() => e_down.className = '', 125);
     await send_message('down').promise;
   } else if (victus.keys.ArrowLeft?.press) {
+    e_left.className = 'active';
+    setTimeout(() => e_left.className = '', 125);
     await send_message('left').promise;
   } else if (victus.keys.ArrowRight?.press) {
+    e_right.className = 'active';
+    setTimeout(() => e_right.className = '', 125);
     await send_message('right').promise;
   } else if (victus.keys.x?.press) {
+    e_select.className = 'active';
+    setTimeout(() => e_select.className = '', 125);
     await send_message('select').promise;
   }
   Object.keys(victus.keys).forEach(key => victus.keys[key].press = false);
