@@ -24,6 +24,7 @@ const latin_phrases = [
 ];
 
 let unlocked;
+let version;
 let matrix_color;
 let oscillator;
 let animation_frame;
@@ -37,6 +38,7 @@ let active_message;
 const editor_view = document.querySelector('.cm-editor').querySelector('.cm-content').cmView.view;
 const e_q = document.getElementById('q');
 const e_latin_phrase = document.getElementById('latin_phrase');
+const e_editor_version = document.getElementById('editor_version');
 const e_feedback = document.getElementById('feedback');
 const e_password_container = document.getElementById('password_container');
 const e_password = document.getElementById('password');
@@ -133,15 +135,34 @@ e_confirm_message.onclick = function () {
   e_message_container.className = 'dn';
   e_editor_top_container.className = '';
   e_editor_bottom_container.className = '';
-  // add a cookie if confirming `messages.soft_launch` for the first time
+  // add a cookie if confirming `messages.soft_launch`
   if (active_message === messages.soft_launch) {
     localStorage.setItem('unlocked', '1');
+    try_show_changes();
+  }
+  // add a cookie if confirming the latest version message
+  if (active_message.name.startsWith('v0')) {
+    localStorage.setItem('version', active_message.name);
   }
 }
 
 e_q.onclick = function () {
   active_message = messages.soft_launch.show();
 }
+
+function try_show_changes (force = false) {
+  const V = e_editor_version.innerHTML;
+  const messages_key = V.replaceAll('.', '_');
+  if (force) {
+    active_message = messages[messages_key].show();
+    return;
+  }
+  if (localStorage.getItem('unlocked') === '1' && localStorage.getItem('version') !== messages_key) {
+    active_message = messages[messages_key].show();
+  }
+}
+
+e_editor_version.onclick = () => try_show_changes(true);
 
 e_feedback.onclick = function () {
   active_message = messages.feedback.show();
@@ -439,8 +460,11 @@ async function init () {
   // hate this
   const messages_js = await import('./messages.js');
   messages = messages_js.default;
-  // rest of the easy stuff
+  // cookie
   unlocked = localStorage.getItem('unlocked') ?? '0';
+  // version check
+  try_show_changes();
+    // rest of the easy stuff
   matrix_color = Number(localStorage.getItem('matrix_color') ?? '0');
   blank_matrix();
   e_latin_phrase.innerHTML = latin_phrases[Math.floor(Math.random() * latin_phrases.length)];

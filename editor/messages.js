@@ -78,7 +78,8 @@ class Message {
    * Construct a new message from a well-formed string.
    * @param {string} s
    */
-  constructor (s) {
+  constructor (name, s) {
+    this.name = name;
     matchWithCapturingGroups(
       s,
       EXP_MESSAGE,
@@ -132,7 +133,7 @@ class Message {
   }
 }
 
-const feedback = new Message(
+const feedback = new Message('feedback',
 `## Feedback
 #### Vox populi vox dei
 
@@ -152,7 +153,7 @@ You have two options:
 [Nevermind]`
 );
 
-const soft_launch = new Message(
+const soft_launch = new Message('soft_launch',
 `## Black Box editor
 #### (Soft launch)
 
@@ -170,7 +171,32 @@ Your feedback will help me make the editor **the best it can be** ahead of Black
 [Let's go!]`
 );
 
+const v0_1_0rc2 = new Message('v0_1_0rc2',
+`## What's new?
+#### Version 0.1.0rc2
+
+These features are now available:
+
+<ul>
+  <li>**Empty arrays** &ndash; Define arrays without an initializer list, like \`int data[8];\`</li>
+  <li>**UI improvements** &ndash; Increased status contrast, made the buttons light up</li>
+  <li>**"What's new?"** &ndash; You're looking at this right now</li>
+</ul>
+
+These bugs have been fixed:
+
+<ul>
+  <li>Accessing global variables, functions, and macros should now work 100% of the time</li>
+  <li>Accessing anything that doesn't exist now throws an error</li>
+  <li>The AST now correctly parses prefix expressions, e.g. \`int a = -1;\`</li>
+  <li>Fixed an issue with \`blackbox->sleep()\`</li>
+</ul>
+
+[Awesome!]`
+);
+
 export default {
   feedback,
   soft_launch,
+  v0_1_0rc2,
 }

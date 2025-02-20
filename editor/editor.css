@@ -154,7 +154,7 @@ hr {
   text-transform:uppercase;
 }
 
-#q:hover, #feedback:hover {
+#q:hover, #editor_version:hover, #feedback:hover {
   cursor:pointer;
 }
 
