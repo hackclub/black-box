@@ -14,10 +14,7 @@ let while_count = 0;
 
 let last_match;
 
-// TODO: setting nonexistent fields on `emu.globals.blackbox` and other structs is allowed when it shouldn't be
-// TODO: calling a nonexistent function doesn't kill the emulator
 // TODO: sanity check BLACKBOX_TIMEOUT_1 and BLACKBOX_TIMEOUT_2
-// TODO: global letiable declarations should be eval-ed immediately so other global letiable declarations can use them
 
 // TODO: in my heart of hearts i wish the following two functions didn't have to be
 // defined in a total of three different places
@@ -73,6 +70,45 @@ function matchAllWithCapturingGroups (value, ex, ...groups) {
     return object;
   });
   return last_match.length > 0;
+}
+
+function find_nodes_of_type (T, top) {
+  let nodes = [];
+  function recurse (current) {
+    if (typeof current === 'object' && current !== null) {
+      for (let key in current) {
+        if (key === 'type' && current[key] === T) {
+          nodes.push(current);
+        } else {
+          recurse(current[key]);
+        }
+      }
+    }
+  }
+  recurse(top);
+  return nodes;
+}
+
+/**
+ * Throw if an AST node of type `Identifier` cannot be associated with a
+ * globally defined variable, globally defined function, or any of the
+ * provided local definitions.
+ * @param {*} node
+ * @param {string[]} [locals]
+ */
+function throw_if_unknown (node, locals = []) {
+  if (node.type !== 'Identifier') {
+    return;
+  }
+  if (
+    !(
+      Object.keys(emu.variables).includes(node.value) ||
+      Object.keys(emu.functions).includes(node.value) ||
+      locals.includes(node.value)
+    )
+  ) {
+    throw new Error(`\`${node.value}\` is not defined`);
+  }
 }
 
 /**
@@ -138,6 +174,7 @@ function ast_node_to_js (node) {
     }
     case 'CallExpression': {
       const base = ast_node_to_js(node.base);
+      node.arguments.forEach(throw_if_unknown);
       const args = node.arguments.map(ast_node_to_js).join(', ');
       // once upon a time this case passed `emu` as the first argument,
       // but because the calls `function_name()` and `some->struct->function_name()`
@@ -245,6 +282,44 @@ ___WHILE_${W}()`
       const return_statement_count = node.body.filter(node => node.type === 'ReturnStatement').length;
       if (return_statement_count > 1) {
         throw new Error('Unreachable code detected');
+      }
+      // static analysis
+      // get locally defined variables: function arguments, and letiable declarations in the function body
+      const locals = [
+        ...node.body.filter(node => node.type === 'letiableDeclaration').map(dec => dec.name),
+        ...node.arguments.map(node => node.name),
+      ];
+      // for each statement...
+      for (const statement of node.body) {
+        // find every single identifier anywhere in the statement
+        const identifiers = find_nodes_of_type('Identifier', statement);
+        // the keys of this object are exposed as additional locals
+        let object = {};
+        // crawl each identifier
+        for (const identifier of identifiers) {
+          // if we're not yet tracking anything and the identifier can be resolved to a global, track it
+          if (Object.keys(object).length === 0 && emu.globals[identifier.value] !== undefined) {
+            object = emu.globals[identifier.value];
+          }
+          // if the identifier can be resolved to a non-void function on the currently tracked object,
+          // track a new instance of that function's return type and continue
+          else if (typeof object?.[identifier.value] === 'function' && object?.return_types?.[identifier.value] !== null) {
+            object = new (object?.return_types?.[identifier.value]);
+            continue;
+          }
+          // if the identifier can be resolved to a property on the currently tracked object,
+          // track that instead and continue
+          else if (object?.[identifier.value] !== undefined) {
+            object = object?.[identifier.value];
+            continue;
+          }
+          // if none of the above are true, track an empty object
+          else {
+            object = {};
+          }
+          // throw if the identifier is unknown
+          throw_if_unknown(identifier, locals.concat(Object.keys(object || {})));
+        }
       }
       // do work
       const args = node.arguments.map(ast_node_to_js).map(arg => `'${arg}'`).join(', ');
@@ -401,6 +476,18 @@ class Pixel {
      * @type {number}
      */
     this.value = 0;
+    /**
+     * Return types of the methods on this class.
+     * @type {object}
+     * @private
+     */
+    this.return_types = {
+      is_on: Boolean,
+      is_off: Boolean,
+      turn_on: null,
+      turn_off: null,
+      toggle: null,
+    };
   }
   /**
    * Return whether this pixel is turned on.
@@ -450,6 +537,20 @@ class Matrix {
      * @type {Pixel[]}
      */
     this.pixels = Array(64).fill(0).map(x => new Pixel);
+    /**
+     * Return types of the methods on this class.
+     * @type {object}
+     * @private
+     */
+    this.return_types = {
+      pixel: Pixel,
+      pixel_xy: Pixel,
+      turn_all_on: null,
+      turn_all_off: null,
+      set_from_integers: null,
+      slice: Slice,
+      row: Slice,
+    };
   }
   /**
    * Return the *n*-th pixel of the matrix.
@@ -557,6 +658,18 @@ class Slice {
      * @type {number}
      */
     this.end = end;
+    /**
+     * Return types of the methods on this class.
+     * @type {object}
+     * @private
+     */
+    this.return_types = {
+      pixel: Pixel,
+      turn_all_on: null,
+      turn_all_off: null,
+      set_from_integer: null,
+      length: Number, // TODO: make sure this tracks in hardware land
+    }
   }
   /**
    * Return the *n*-th pixel of the slice.
@@ -623,6 +736,15 @@ class Piezo {
      * @private
      */
     this.frequency = 0;
+    /**
+     * Return types of the methods on this class.
+     * @type {object}
+     * @private
+     */
+    this.return_types = {
+      tone: null,
+      no_tone: null,
+    };
   }
   /**
    * Set the frequency of the buzzer to `n` Hz.
@@ -700,6 +822,14 @@ class BlackBox {
      * @type {*}
      */
     this.on_timeout_2 = function () {};
+    /**
+     * Return types of the methods on this class.
+     * @type {object}
+     * @private
+     */
+    this.return_types = {
+      sleep: null,
+    };
   }
   /**
    * Sleep for `n` milliseconds.
@@ -859,7 +989,7 @@ function new_emu () {
       // replace references to global defines so that they access `emu.defines`
       const Ds = Object.keys(this.defines).sort((a, b) => b.length - a.length);
       for (const key of Ds) {
-        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
+        const R = new RegExp(`(?<![A-Za-z0-9_.])${key}`, 'g');
         while (matchWithCapturingGroups(updated, R) === true) {
           const reference = last_match;
           const replacement = `emu.defines.${reference.raw}`;
@@ -904,6 +1034,8 @@ function new_emu () {
      */
     make_function (name, body, ...args) {
       console.log('making function', name);
+      // 0. activate strict mode
+      body = '"use strict";\n' + body;
       // 1. update references
       // this behavior was previously exclusive to this function,
       // but it was broken out so global letiable declarations could use it
