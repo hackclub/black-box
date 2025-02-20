@@ -15,7 +15,6 @@ let while_count = 0;
 let last_match;
 
 // TODO: setting nonexistent fields on `emu.globals.blackbox` and other structs is allowed when it shouldn't be
-// TODO: it should be possible to declare int arrays like `int data[5];`
 // TODO: calling a nonexistent function doesn't kill the emulator
 // TODO: sanity check BLACKBOX_TIMEOUT_1 and BLACKBOX_TIMEOUT_2
 // TODO: global letiable declarations should be eval-ed immediately so other global letiable declarations can use them
@@ -872,6 +871,8 @@ function new_emu () {
       console.log('making function', name);
       // 1. replace calls of globally defined functions within the body
       // so that `emu` is passed as the first argument, then `await` them
+      // TODO: can't pass a variable named `emulsifier` or whatever as the first argument -
+      // the regular expression won't match because the variable name starts with `emu`
       while (
         matchWithCapturingGroups(
           body,
@@ -889,31 +890,34 @@ function new_emu () {
         } else {
           replacement = `await emu.globals.${global_function_call.global}(emu, ${global_function_call.arguments})`;
         }
-        // we can't call `body.replace()`, because what if there's a global function
-        // with a short name, and a global function with a long name that ends in
-        // that short name?
+        // we can't call `body.replace()`, because what if there's a global function with a short name,
+        // and a global function with a long name that ends in that short name?
         // instead, call `body.substring()`
         body = body.substring(0, global_function_call.index) + replacement + body.substring(global_function_call.index + global_function_call.raw.length);
       }
-      // 2. replace updates to user-defined global variables so that they
-      // immediately affect `emu.globals`
-      const K = Object.keys(this.variables).sort((a, b) => b.length - a.length);
-      // sanity check
-      // const I = K.find(k => 'emu.globals'.includes(k));
-      // if (I) {
-      //   throw new Error(`Invalid global variable name ${I}`);
-      // }
-      for (const k of K) {
+      // 2. replace references to global defines so that they access `emu.defines`
+      const Ds = Object.keys(this.defines).sort((a, b) => b.length - a.length);
+      for (const key of Ds) {
+        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
+        while (matchWithCapturingGroups(body, R) === true) {
+          const reference = last_match;
+          const replacement = `emu.defines.${reference.raw}`;
+          body = body.substring(0, reference.index) + replacement + body.substring(reference.index + reference.raw.length);
+        }
+      }
+      // 3. replace references to global variables so that they access `emu.globals`
+      // TODO: does this need to be sorted?
+      const Vs = Object.keys(this.variables).sort((a, b) => b.length - a.length);
+      for (const key of Vs) {
         // TODO: this better be a safe expression or i don't know what i'm gonna do
-        const R = new RegExp(`(?<![A-Za-z0-9_.])(${k})`, 'g');
+        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
         while (matchWithCapturingGroups(body, R) === true) {
           const reference = last_match;
           const replacement = `emu.globals.${reference.raw}`;
           body = body.substring(0, reference.index) + replacement + body.substring(reference.index + reference.raw.length);
         }
-        console.log(body);
       }
-      // 3. replace calls to `blackbox->sleep()` such that `emu.sleeping`
+      // 4. replace calls to `blackbox->sleep()` such that `emu.sleeping`
       // is set to `true` until a promise with the call's duration resolves
       while (
         matchWithCapturingGroups(
