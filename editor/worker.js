@@ -225,7 +225,11 @@ ___WHILE_${W}()`
           emu.globals[node.name] = new Array(...node_value_to_js);
           return '';
         } else {
-          value = `(${node_value_to_js})`;
+          if (node_value_to_js.constructor.name === 'String') {
+            value = `(${emu.update_references(node_value_to_js)})`;
+          } else {
+            value = `(${node_value_to_js})`;
+          }
         }
       }
       eval(`emu.globals['${node.name}'] = ${def_type}${value}`);
@@ -819,6 +823,7 @@ function new_emu () {
     /**
      * Whether the emulator is sleeping.
      * A call to `blackbox->sleep` sets this to true for the duration of the call.
+     * @type {boolean}
      */
     sleeping: false,
     /**
@@ -833,29 +838,48 @@ function new_emu () {
     defines: {},
     /**
      * ID returned by `setInterval()` for timeout 1.
-     * @type {number}
+     * @type {number|undefined}
      * @private
      */
     interval_id_1: undefined,
     /**
      * ID returned by `setInterval()` for timeout 2.
-     * @type {number}
+     * @type {number|undefined}
      * @private
      */
     interval_id_2: undefined,
     /**
-     * Update `this.globals` based on the key-value pairs provided in `object`.
-     * @param {object} object
+     * Update references to global defines and variables in `original`.
+     * @param {string} original
+     * @returns {string}
      */
-    // update_globals (object) {
-    //   for (const entry of Object.entries(object)) {
-    //     const key = entry[0];
-    //     const value_old = this.globals[key];
-    //     const value_new = entry[1];
-    //     // typecheck(value_old, value_new);
-    //     this.globals[key] = value_new;
-    //   }
-    // },
+    update_references (original) {
+      let updated = original;
+      // replace references to global defines so that they access `emu.defines`
+      const Ds = Object.keys(this.defines).sort((a, b) => b.length - a.length);
+      for (const key of Ds) {
+        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
+        while (matchWithCapturingGroups(updated, R) === true) {
+          const reference = last_match;
+          const replacement = `emu.defines.${reference.raw}`;
+          updated = updated.substring(0, reference.index) + replacement + updated.substring(reference.index + reference.raw.length);
+        }
+      }
+      // replace references to global variables so that they access `emu.globals`
+      // TODO: does this need to be sorted?
+      const Vs = Object.keys(this.variables).sort((a, b) => b.length - a.length);
+      for (const key of Vs) {
+        // TODO: this better be a safe expression or i don't know what i'm gonna do
+        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
+        while (matchWithCapturingGroups(updated, R) === true) {
+          const reference = last_match;
+          const replacement = `emu.globals.${reference.raw}`;
+          updated = updated.substring(0, reference.index) + replacement + updated.substring(reference.index + reference.raw.length);
+        }
+      }
+      // finished
+      return updated;
+    },
     /**
      * Create a Function object to store on `this.globals`.
      * To allow created functions to access other variables and functions on
@@ -895,29 +919,11 @@ function new_emu () {
         // instead, call `body.substring()`
         body = body.substring(0, global_function_call.index) + replacement + body.substring(global_function_call.index + global_function_call.raw.length);
       }
-      // 2. replace references to global defines so that they access `emu.defines`
-      const Ds = Object.keys(this.defines).sort((a, b) => b.length - a.length);
-      for (const key of Ds) {
-        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
-        while (matchWithCapturingGroups(body, R) === true) {
-          const reference = last_match;
-          const replacement = `emu.defines.${reference.raw}`;
-          body = body.substring(0, reference.index) + replacement + body.substring(reference.index + reference.raw.length);
-        }
-      }
-      // 3. replace references to global variables so that they access `emu.globals`
-      // TODO: does this need to be sorted?
-      const Vs = Object.keys(this.variables).sort((a, b) => b.length - a.length);
-      for (const key of Vs) {
-        // TODO: this better be a safe expression or i don't know what i'm gonna do
-        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
-        while (matchWithCapturingGroups(body, R) === true) {
-          const reference = last_match;
-          const replacement = `emu.globals.${reference.raw}`;
-          body = body.substring(0, reference.index) + replacement + body.substring(reference.index + reference.raw.length);
-        }
-      }
-      // 4. replace calls to `blackbox->sleep()` such that `emu.sleeping`
+      // 2. update references
+      // this behavior was previously exclusive to this function,
+      // but it was broken out so global letiable declarations could use it
+      body = this.update_references(body);
+      // 3. replace calls to `blackbox->sleep()` such that `emu.sleeping`
       // is set to `true` until a promise with the call's duration resolves
       while (
         matchWithCapturingGroups(
@@ -948,7 +954,7 @@ emu.interval_id_2 = setInterval(() => emu.globals.on_timeout_2(emu), ${emu.defin
 ${loop_signature.raw}`;
         body = body.substring(0, loop_signature.index) + replacement + body.substring(loop_signature.index + loop_signature.raw.length);
       }
-      // 4. create function
+      // 5. create function
       const F = new AsyncFunction(
         'emu',
         ...args,
