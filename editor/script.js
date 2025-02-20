@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', victus.setup({
   color: '#222',
 }));
 
-let main;
 let worker;
 
 const latin_phrases = [
@@ -157,10 +156,7 @@ e_feedback.onclick = function () {
  * @param {object} [data] Message data.
  */
 function send_message (message, data = {}) {
-  let _resolve, _reject;
-  const promise = new Promise((resolve, reject) => {
-    _resolve = resolve;
-    _reject = reject;
+  return new Promise((resolve, reject) => {
     const channel = new MessageChannel();
     channel.port1.onmessage = e => {
       channel.port1.close();
@@ -172,11 +168,6 @@ function send_message (message, data = {}) {
     };
     worker.postMessage({ message, ...data }, [channel.port2]);
   });
-  return {
-    promise,
-    resolve: _resolve,
-    reject: _reject,
-  };
 }
 
 /**
@@ -278,23 +269,23 @@ async function check_buttons () {
   if (victus.keys.ArrowUp?.press) {
     e_up.className = 'active';
     setTimeout(() => e_up.className = '', 125);
-    await send_message('up').promise;
+    await send_message('up');
   } else if (victus.keys.ArrowDown?.press) {
     e_down.className = 'active';
     setTimeout(() => e_down.className = '', 125);
-    await send_message('down').promise;
+    await send_message('down');
   } else if (victus.keys.ArrowLeft?.press) {
     e_left.className = 'active';
     setTimeout(() => e_left.className = '', 125);
-    await send_message('left').promise;
+    await send_message('left');
   } else if (victus.keys.ArrowRight?.press) {
     e_right.className = 'active';
     setTimeout(() => e_right.className = '', 125);
-    await send_message('right').promise;
+    await send_message('right');
   } else if (victus.keys.x?.press) {
     e_select.className = 'active';
     setTimeout(() => e_select.className = '', 125);
-    await send_message('select').promise;
+    await send_message('select');
   }
   Object.keys(victus.keys).forEach(key => victus.keys[key].press = false);
   animation_frame = window.requestAnimationFrame(check_buttons);
@@ -385,8 +376,7 @@ e_toggle_running.onclick = async function () {
   }
   if (e_toggle_running.innerHTML === 'Stop') { // same behavior without a boolean `running`
     // stop the emulator
-    main.resolve();
-    await send_message('stop').promise;
+    await send_message('stop');
     // stop the oscillator
     oscillator.stop();
     // terminate the worker from this thread so everything can resolve
@@ -409,26 +399,23 @@ e_toggle_running.onclick = async function () {
       worker = new_worker();
       console.log('[main] finished creating worker');
       // 2. create emulator
-      await send_message('create_emu').promise;
+      await send_message('create_emu');
       // 3. create AST
       await send_message(
         'create_ast',
         { doc: blackbox_h + '\n\n' + blackbox_struct_definitions + '\n\n' + editor_view.state.doc.toString() }
-      ).promise;
+      );
       // 4. run checks on the AST
-      await send_message('sanity_check').promise;
+      await send_message('sanity_check');
       // 5. convert the AST to JavaScript
-      await send_message('convert_ast').promise;
+      await send_message('convert_ast');
       // 6. eval each
-      await send_message('eval_ast').promise;
+      await send_message('eval_ast');
       // 7. replace the matrix with a deeply nested proxy
-      await send_message('create_matrix_proxy').promise;
+      await send_message('create_matrix_proxy');
       // 8. call main
-      main = send_message('main');
-      await main.promise;
+      await send_message('main');
       // the main message returns immediately, so we can put these lines here again
-      // TODO: does this mean `send_message` can return the Promise
-      // instead of a messy object?
       // 9. update UI, start checking buttons
       e_info_container.classList.remove('dn');
       e_info.innerHTML = 'Use arrow keys + X';
