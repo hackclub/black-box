@@ -191,6 +191,7 @@ ${inject(body)}
       // instead, we create a plain old function that repeatedly calls itself
       // on an interval until `emu.running` is false or the condition returns `false`.
       let W = while_count++;
+      // TODO: async
       return `function ___WHILE_${W} () {
 if (!emu.running) { return null; }
 if ((${condition}) === false) { return null; }
@@ -865,12 +866,22 @@ function new_emu () {
           updated = updated.substring(0, reference.index) + replacement + updated.substring(reference.index + reference.raw.length);
         }
       }
+      // replace references to global functions so that they access `emu.globals`
+      const Fs = Object.keys(this.functions).sort((a, b) => b.length - a.length);
+      for (const key of Fs) {
+        const R = new RegExp(`(?<![A-Za-z0-9_.])${key}\\((.*?)\\)`, 'g');
+        while (matchWithCapturingGroups(updated, R, 'args') === true) {
+          const reference = last_match;
+          const replacement = `await emu.globals.${key}(emu, ${reference.args})`;
+          updated = updated.substring(0, reference.index) + replacement + updated.substring(reference.index + reference.raw.length);
+        }
+      }
       // replace references to global variables so that they access `emu.globals`
       // TODO: does this need to be sorted?
       const Vs = Object.keys(this.variables).sort((a, b) => b.length - a.length);
       for (const key of Vs) {
         // TODO: this better be a safe expression or i don't know what i'm gonna do
-        const R = new RegExp(`(?<![A-Za-z0-9_.])(${key})`, 'g');
+        const R = new RegExp(`(?<![A-Za-z0-9_.])${key}(?![A-Za-z0-9_])`, 'g');
         while (matchWithCapturingGroups(updated, R) === true) {
           const reference = last_match;
           const replacement = `emu.globals.${reference.raw}`;
@@ -893,37 +904,11 @@ function new_emu () {
      */
     make_function (name, body, ...args) {
       console.log('making function', name);
-      // 1. replace calls of globally defined functions within the body
-      // so that `emu` is passed as the first argument, then `await` them
-      // TODO: can't pass a variable named `emulsifier` or whatever as the first argument -
-      // the regular expression won't match because the variable name starts with `emu`
-      while (
-        matchWithCapturingGroups(
-          body,
-          /^((let) )?(([A-Za-z0-9_]+?) = )?((?!setTimeout)(?!___)[A-Za-z0-9_]+?)\(((?!emu).+?)?\)/gm,
-          '_', 'let',
-          '_', 'identifier',
-          'global',
-          'arguments'
-        ) === true
-      ) {
-        const global_function_call = last_match;
-        let replacement;
-        if (global_function_call.arguments === '') {
-          replacement = `await emu.globals.${global_function_call.global}(emu)`;
-        } else {
-          replacement = `await emu.globals.${global_function_call.global}(emu, ${global_function_call.arguments})`;
-        }
-        // we can't call `body.replace()`, because what if there's a global function with a short name,
-        // and a global function with a long name that ends in that short name?
-        // instead, call `body.substring()`
-        body = body.substring(0, global_function_call.index) + replacement + body.substring(global_function_call.index + global_function_call.raw.length);
-      }
-      // 2. update references
+      // 1. update references
       // this behavior was previously exclusive to this function,
       // but it was broken out so global letiable declarations could use it
       body = this.update_references(body);
-      // 3. replace calls to `blackbox->sleep()` such that `emu.sleeping`
+      // 2. replace calls to `blackbox->sleep()` such that `emu.sleeping`
       // is set to `true` until a promise with the call's duration resolves
       while (
         matchWithCapturingGroups(
@@ -939,22 +924,21 @@ await new Promise(resolve => setTimeout(resolve, ${Number(blackbox_sleep_call.ms
 emu.sleeping = false`;
         body = body.substring(0, blackbox_sleep_call.index) + replacement + body.substring(blackbox_sleep_call.index + blackbox_sleep_call.raw.length);
       }
-      // 4. extra replacements to make to the main function
+      // 3. extra replacements to make to the main function
       if (name === 'main') {
         // find the infinite loop inside the body (remember, this was converted into a plain function)
-        // and add some things before it: start the 2 timeouts and call `emu.update_globals`
+        // and start the 2 timeouts before it
         matchWithCapturingGroups(
           body,
           /function ___WHILE_\d+ \(\) {/g
         );
         const loop_signature = last_match;
-        // note: `emu.update_globals({ ${Object.keys(emu.globals).join(', ')} })` was placed before `${loop_signature.raw}`
         const replacement = `emu.interval_id_1 = setInterval(() => emu.globals.on_timeout_1(emu), ${emu.defines.BLACKBOX_TIMEOUT_1})
 emu.interval_id_2 = setInterval(() => emu.globals.on_timeout_2(emu), ${emu.defines.BLACKBOX_TIMEOUT_2})
 ${loop_signature.raw}`;
         body = body.substring(0, loop_signature.index) + replacement + body.substring(loop_signature.index + loop_signature.raw.length);
       }
-      // 5. create function
+      // 4. create function
       const F = new AsyncFunction(
         'emu',
         ...args,
@@ -963,7 +947,8 @@ ${loop_signature.raw}`;
       return F;
     },
     /**
-     * Return whether a specific function name is reserved (requires a definition).
+     * Return whether a specific function name is reserved.
+     * Reserved functions must have a definition and should not be called directly.
      * @param {string} function_name
      * @returns {boolean}
      */
