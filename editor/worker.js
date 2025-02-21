@@ -77,7 +77,9 @@ function find_nodes_of_type (T, top) {
   function recurse (current) {
     if (typeof current === 'object' && current !== null) {
       for (let key in current) {
-        if (key === 'type' && current[key] === T) {
+        if (key === 'type' && T === '*') {
+          nodes.push(current);
+        } else if (key === 'type' && current[key] === T) {
           nodes.push(current);
         } else {
           recurse(current[key]);
@@ -178,7 +180,6 @@ function ast_node_to_js (node) {
     }
     case 'CallExpression': {
       const base = ast_node_to_js(node.base);
-      node.arguments.forEach(throw_if_unknown);
       const args = node.arguments.map(ast_node_to_js).join(', ');
       // once upon a time this case passed `emu` as the first argument,
       // but because the calls `function_name()` and `some->struct->function_name()`
@@ -295,27 +296,52 @@ ___WHILE_${W}()`
       ];
       // for each statement...
       for (const statement of node.body) {
-        // find every single identifier anywhere in the statement
-        const identifiers = find_nodes_of_type('Identifier', statement);
-        // console.log(identifiers);
+        // find every single node anywhere in the statement
+        const statement_nodes = find_nodes_of_type('*', statement);
         // the keys of this object are exposed as additional locals
         let object = {};
+        // marker
+        let analyze_this_many_arguments = 0;
         // crawl each identifier
-        for (const identifier of identifiers) {
-          // if we're not yet tracking anything and the identifier can be resolved to a global, track it
-          if (emu.globals[identifier.value] !== undefined) {
-            object = emu.globals[identifier.value];
+        for (let i = 0; i < statement_nodes.length; i++) {
+          const prev_sn = statement_nodes[i - 1];
+          const sn = statement_nodes[i];
+          // decrement
+          if (analyze_this_many_arguments > 0) {
+            analyze_this_many_arguments--;
+          }
+          if (sn.type === 'letiableDeclaration') {
+            locals.push(sn.name);
+          }
+          // skip any nodes that are not identifiers
+          if (sn.type !== 'Identifier') {
+            continue;
+          }
+          // if analyzing arguments, throw if the identifier is unknown and don't do anything else with it
+          if (analyze_this_many_arguments > 0) {
+            throw_if_unknown(sn, locals.concat(Object.keys(object || {})));
+            continue;
+          }
+          // if the identifier's position is undefined, it is the base of the call expression
+          // which can be found by looking at the previous node
+          if (sn.pos === undefined) {
+            analyze_this_many_arguments = prev_sn.arguments.filter(arg => arg !== undefined).length;
+            continue;
+          }
+          // if the identifier can be resolved to a global, track it
+          if (emu.globals[sn.value] !== undefined) {
+            object = emu.globals[sn.value];
           }
           // if the identifier can be resolved to a non-void function on the currently tracked object,
           // track a new instance of that function's return type and continue
-          else if (typeof object?.[identifier.value] === 'function' && object?.return_types?.[identifier.value] !== null) {
-            object = new (object?.return_types?.[identifier.value]);
+          else if (typeof object?.[sn.value] === 'function' && object?.return_types?.[sn.value] !== null) {
+            object = new (object?.return_types?.[sn.value]);
             continue;
           }
           // if the identifier can be resolved to a property on the currently tracked object,
           // track that instead and continue
-          else if (object?.[identifier.value] !== undefined) {
-            object = object?.[identifier.value];
+          else if (object?.[sn.value] !== undefined) {
+            object = object?.[sn.value];
             continue;
           }
           // if none of the above are true, track an empty object
@@ -323,7 +349,7 @@ ___WHILE_${W}()`
             object = {};
           }
           // throw if the identifier is unknown
-          throw_if_unknown(identifier, locals.concat(Object.keys(object || {})));
+          throw_if_unknown(sn, locals.concat(Object.keys(object || {})));
         }
       }
       // do work
