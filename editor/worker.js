@@ -97,6 +97,10 @@ function find_nodes_of_type (T, top) {
  * @param {string[]} [locals]
  */
 function throw_if_unknown (node, locals = []) {
+  // apparently this can happen
+  if (node === undefined) {
+    return;
+  }
   if (node.type !== 'Identifier') {
     return;
   }
@@ -293,12 +297,13 @@ ___WHILE_${W}()`
       for (const statement of node.body) {
         // find every single identifier anywhere in the statement
         const identifiers = find_nodes_of_type('Identifier', statement);
+        // console.log(identifiers);
         // the keys of this object are exposed as additional locals
         let object = {};
         // crawl each identifier
         for (const identifier of identifiers) {
           // if we're not yet tracking anything and the identifier can be resolved to a global, track it
-          if (Object.keys(object).length === 0 && emu.globals[identifier.value] !== undefined) {
+          if (emu.globals[identifier.value] !== undefined) {
             object = emu.globals[identifier.value];
           }
           // if the identifier can be resolved to a non-void function on the currently tracked object,
