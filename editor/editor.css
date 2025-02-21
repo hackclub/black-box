@@ -103,6 +103,13 @@ hr {
   gap:16px;
 }
 
+#message_container.small {
+  top:30vh;
+  left:30vw;
+  width:40vw;
+  height:40vh;
+}
+
 #message_text_container {
   overflow-y:scroll;
   max-height:calc(100% - 30px - 16px);
@@ -119,9 +126,18 @@ hr {
   margin-bottom:16px;
 }
 
-#confirm_message {
+#message_buttons_container {
+  height:10vh;
+  display:flex;
+}
+
+#confirm_message, #deny_message {
   margin:0;
   width:fit-content;
+}
+
+#deny_message {
+  margin-left:8px
 }
 
 #editor_container {

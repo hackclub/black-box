@@ -3,13 +3,6 @@
   Black Box editor main thread
 */
 
-document.addEventListener('DOMContentLoaded', victus.setup({
-  id: 'canvas',
-  w: 160,
-  h: 160,
-  color: '#222',
-}));
-
 let worker;
 
 const latin_phrases = [
@@ -22,6 +15,8 @@ const latin_phrases = [
   'Absens haeres non erit',
   'Nec dextrorsum, nec sinistrorsum',
 ];
+
+let params;
 
 let unlocked;
 let version;
@@ -47,6 +42,7 @@ const e_message_container = document.getElementById('message_container');
 const e_message_text_container = document.getElementById('message_text_container');
 const e_message_body = document.getElementById('message_body');
 const e_confirm_message = document.getElementById('confirm_message');
+const e_deny_message = document.getElementById('deny_message');
 const e_editor_container = document.getElementById('editor_container');
 const e_editor_top_container = document.getElementById('editor_top_container');
 const e_editor_bottom_container = document.getElementById('editor_bottom_container');
@@ -63,8 +59,17 @@ const e_info = document.getElementById('info');
 const e_toggle_running = document.getElementById('toggle_running');
 const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
+const e_permalink = document.getElementById('permalink');
+const e_edit = document.getElementById('edit');
 const e_gesture_container = document.getElementById('gesture_container');
 const e_status = document.getElementById('status');
+
+document.addEventListener('DOMContentLoaded', victus.setup({
+  id: 'canvas',
+  w: 160,
+  h: 160,
+  color: '#222',
+}));
 
 /**
  * Mock header contents.
@@ -128,6 +133,7 @@ e_submit_password.onclick = submit_password;
 window.onresize = e_message_text_container.onscroll = function () {
   if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight - 20) {
     e_confirm_message.disabled = false;
+    e_deny_message.disabled = false;
   }
 }
 
@@ -144,6 +150,21 @@ e_confirm_message.onclick = function () {
   if (active_message.name.startsWith('v0')) {
     localStorage.setItem('version', active_message.name);
   }
+  // confirm edit
+  if (active_message.name === 'confirm_edit') {
+    // console.log('[main] user hit Edit - they want to edit the permalink!');
+    localStorage.setItem('doc', editor_view.state.doc.toString());
+    window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
+  }
+}
+
+e_deny_message.onclick = function () {
+  e_message_container.className = 'dn';
+  e_editor_top_container.className = '';
+  e_editor_bottom_container.className = '';
+  // if (active_message.name === 'confirm_edit') {
+  //   console.log("[main] user hit Cancel - they don't want to edit the permalink!");
+  // }
 }
 
 e_q.onclick = function () {
@@ -387,6 +408,23 @@ e_change_color.onclick = function () {
 }
 
 /**
+ * Callback for `#permalink`.
+ * Generate a link to the code in the editor.
+ */
+e_permalink.onclick = function () {
+  const doc = editor_view.state.doc.toString();
+  window.location.href = encodeURI(`${window.location.href.split('?')[0]}?code=${btoa(doc)}`);
+}
+
+/**
+ * Callback for `#edit`.
+ * Display confirmation message.
+ */
+e_edit.onclick = function () {
+  active_message = messages.confirm_edit.show();
+}
+
+/**
  * Callback for `#toggle_running`.
  * Start and stop the emulator.
  */
@@ -464,6 +502,13 @@ async function init () {
   unlocked = localStorage.getItem('unlocked') ?? '0';
   // version check
   try_show_changes();
+  // URL parameters
+  params = new URLSearchParams(window.location.search);
+  if (params.get('code') !== null) {
+    e_cm_container.className = 'cna';
+    e_permalink.className = 'dn';
+    e_edit.className = '';
+  }
     // rest of the easy stuff
   matrix_color = Number(localStorage.getItem('matrix_color') ?? '0');
   blank_matrix();

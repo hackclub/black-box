@@ -3,7 +3,7 @@
   modal messages for Black Box editor
 */
 
-let EXP_MESSAGE = /## (.+?)\n#### (.+?)\n\n(.+?)\n\n\[(.+?)\]/gms;
+let EXP_MESSAGE = /## (.+?)\n#### (.+?)\n\n(.+?)\n\n\[(.+?)\]( \[(.+?)\])?/gms;
 let EXP_BODY_PARAGRAPH = /(.+?)(\n\n|$)/gs;
 
 let last_match;
@@ -14,6 +14,7 @@ const e_message_heading = document.getElementById('message_heading');
 const e_message_subheading = document.getElementById('message_subheading');
 const e_message_body = document.getElementById('message_body');
 const e_confirm_message = document.getElementById('confirm_message');
+const e_deny_message = document.getElementById('deny_message');
 const e_editor_top_container = document.getElementById('editor_top_container');
 const e_editor_bottom_container = document.getElementById('editor_bottom_container');
 
@@ -78,18 +79,20 @@ class Message {
    * Construct a new message from a well-formed string.
    * @param {string} s
    */
-  constructor (name, s) {
+  constructor (name, s, small = false) {
     this.name = name;
+    this.small = small;
     matchWithCapturingGroups(
       s,
       EXP_MESSAGE,
-      'heading', 'subheading', 'body', 'confirmation'
+      'heading', 'subheading', 'body', 'confirm', '_', 'deny'
     );
     const message = last_match;
     this.heading = message.heading;
     this.subheading = message.subheading;
     this.body = message.body;
-    this.confirmation = message.confirmation;
+    this.confirm = message.confirm;
+    this.deny = message.deny;
   }
   /**
    * Show this message, and return it.
@@ -99,7 +102,13 @@ class Message {
     e_message_heading.innerHTML = this.heading;
     e_message_subheading.innerHTML = this.subheading;
     e_message_body.innerHTML = '';
-    e_confirm_message.innerHTML = this.confirmation;
+    e_confirm_message.innerHTML = this.confirm;
+    if (this.deny === '') {
+      e_deny_message.className = 'dn';
+    } else {
+      e_deny_message.className = '';
+      e_deny_message.innerHTML = this.deny;
+    }
     // the hard part
     matchAllWithCapturingGroups(
       this.body,
@@ -117,21 +126,39 @@ class Message {
       e_message_body.appendChild(p);
     }
     // the second easy part
-    e_message_container.className = '';
+    if (this.small === true) {
+      e_message_container.className = 'small';
+    } else {
+      e_message_container.className = '';
+    }
     e_confirm_message.disabled = true;
+    e_deny_message.disabled = true;
     e_editor_top_container.classList.add('oh');
     e_editor_top_container.classList.add('in');
     e_editor_bottom_container.classList.add('oh');
     e_editor_bottom_container.classList.add('in');
     // the third easy part
     e_message_text_container.scrollTo({ top: 0 });
-    if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight) {
+    if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight - 20) {
       e_confirm_message.disabled = false;
+      e_deny_message.disabled = false;
     }
     // return
     return this;
   }
 }
+
+// class SmallMessage extends Message {}
+
+const confirm_edit = new Message('confirm_edit',
+`## Are you sure?
+#### ...
+
+If you hit Edit, the code you were editing before you viewed this permalink will be lost forever! (A long time!)
+
+[Edit] [Cancel]`,
+true
+)
 
 const feedback = new Message('feedback',
 `## Feedback
@@ -196,6 +223,7 @@ These bugs have been fixed:
 );
 
 export default {
+  confirm_edit,
   feedback,
   soft_launch,
   v0_1_0rc2,

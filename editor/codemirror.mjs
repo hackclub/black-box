@@ -33,6 +33,8 @@ void main() {
   }
 }`;
 
+let params = new URLSearchParams(window.location.search);
+
 const extensions = [
   closeBrackets(),
   history(),
@@ -54,15 +56,28 @@ const extensions = [
   StreamLanguage.define(c),
   syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
   EditorView.updateListener.of(update => {
-    if (update.docChanged) {
+    if (update.docChanged && params.get('code') === null) {
       localStorage.setItem('doc', update.state.doc.toString());
     }
   }),
+  EditorState.readOnly.of(params.get('code') !== null),
 ];
+
+let doc;
+if (params.get('code') !== null) {
+  console.log('[cm] setting code based on URL parameter')
+  doc = atob(params.get('code'));
+} else if (localStorage.getItem('doc') !== null) {
+  console.log('[cm] setting code based on local storage')
+  doc = localStorage.getItem('doc');
+} else {
+  console.log('[cm] setting code to default');
+  doc = default_doc;
+}
 
 let state = EditorState.create({
   extensions,
-  doc: localStorage.getItem('doc') ?? default_doc,
+  doc,
 });
 let editor = new EditorView({
   state,
