@@ -320,7 +320,7 @@ const E = new Date(Date.UTC(2025, 2, 16, 4, 0, 0, 0))
 let matrix = new Matrix;
 let piezo = null;
 matrix.draw_to_canvas();
-const se = matrix.row(1).slice(1, 3);
+const se = matrix.row(1).slice(1, 5);
 const sH = matrix.row(2).slice(1, 5);
 const sM = matrix.row(3).slice(1, 6);
 const sS = matrix.row(4).slice(1, 6);
