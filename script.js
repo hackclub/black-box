@@ -314,7 +314,8 @@ window.addEventListener('keydown', e => {
 });
 
 // const E = new Date(Date.UTC(2025, 1, 5, 18, 0, 0, 0));
-const E = new Date(Date.UTC(2025, 1, 22, 15, 0, 0, 0));
+// const E = new Date(Date.UTC(2025, 1, 22, 15, 0, 0, 0));
+const E = new Date(Date.UTC(2025, 2, 16, 4, 0, 0, 0))
 
 let matrix = new Matrix;
 let piezo = null;
