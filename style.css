@@ -283,6 +283,10 @@ main {
   pointer-events:none !important;
 }
 
+.cna {
+  cursor:not-allowed;
+}
+
 ::-webkit-scrollbar {
   -webkit-appearance:none;
   width:2px;
