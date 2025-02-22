@@ -506,6 +506,7 @@ async function init () {
   params = new URLSearchParams(window.location.search);
   if (params.get('code') !== null) {
     e_cm_container.className = 'cna';
+    e_toggle_view.className = 'dn';
     e_permalink.className = 'dn';
     e_edit.className = '';
   }
