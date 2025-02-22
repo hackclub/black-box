@@ -198,6 +198,21 @@ Your feedback will help me make the editor **the best it can be** ahead of Black
 [Let's go!]`
 );
 
+const launch = new Message('launch',
+`## Black Box editor
+#### Official launch
+
+**Welcome to the Black Box editor!**
+
+This is what you'll be using to design and test your submission for Black Box. It won't be easy, but I know you can do it!\\
+*Read the docs*, *ask questions*, and above all, **try your best!**
+
+If you'd like to **report a bug in the editor** that *prevents your code from working* the way it should, or you'd like to **request a feature** that the editor is missing, you can do so using the <b class="red">Feedback</b> link at the top of the page.\\
+I can't wait to see what you create with it &#x1f604;
+
+[Let's go!]`
+);
+
 const v0_1_0rc2 = new Message('v0_1_0rc2',
 `## What's new?
 #### Version 0.1.0rc2
@@ -245,6 +260,7 @@ export default {
   confirm_edit,
   feedback,
   soft_launch,
+  launch,
   v0_1_0rc2,
   v0_1_0,
 }

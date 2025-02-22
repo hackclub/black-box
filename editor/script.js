@@ -18,8 +18,10 @@ const latin_phrases = [
 
 let params;
 
+// value of `unlocked` local storage
+// has the user confirmed the intro message before?
 let unlocked;
-let version;
+
 let matrix_color;
 let oscillator;
 let animation_frame;
@@ -63,6 +65,8 @@ const e_permalink = document.getElementById('permalink');
 const e_edit = document.getElementById('edit');
 const e_gesture_container = document.getElementById('gesture_container');
 const e_status = document.getElementById('status');
+
+const BYPASS_PASSWORD = true;
 
 document.addEventListener('DOMContentLoaded', victus.setup({
   id: 'canvas',
@@ -110,8 +114,12 @@ function submit_password() {
     e_password_container.className = 'dn';
     e_editor_container.classList.remove('dn');
     e_editor_container.classList.replace('oz', 'of');
-    e_editor_container.style.animation = '2s linear 0s fade-in-from-zero';
-    active_message = messages.soft_launch.show();
+    // e_editor_container.style.animation = '2s linear 0s fade-in-from-zero';
+    // only show the message if the user has never seen it before
+    if (unlocked === '0') {
+      // active_message = messages.soft_launch.show();
+      active_message = messages.launch.show();
+    }
   } else {
     console.log('[main] password denied!');
     e_password.className = 'denied';
@@ -141,8 +149,9 @@ e_confirm_message.onclick = function () {
   e_message_container.className = 'dn';
   e_editor_top_container.className = '';
   e_editor_bottom_container.className = '';
-  // add a cookie if confirming `messages.soft_launch`
-  if (active_message === messages.soft_launch) {
+  // add a cookie if confirming the intro message
+  // if (active_message === messages.soft_launch) {
+  if (active_message === messages.launch) {
     localStorage.setItem('unlocked', '1');
     try_show_changes();
   }
@@ -168,7 +177,8 @@ e_deny_message.onclick = function () {
 }
 
 e_q.onclick = function () {
-  active_message = messages.soft_launch.show();
+  // active_message = messages.soft_launch.show();
+  active_message = messages.launch.show();
 }
 
 function try_show_changes (force = false) {
@@ -515,14 +525,21 @@ async function init () {
   blank_matrix();
   e_latin_phrase.innerHTML = latin_phrases[Math.floor(Math.random() * latin_phrases.length)];
   e_status.innerHTML = 'Status: Not running';
+  // automatically fill the password if set to bypass
   // unlocked check
   if (unlocked === '1') {
     console.log('[main] skipping password (editor is unlocked)');
     e_editor_container.classList.remove('dn');
-  } else {
-    e_editor_container.classList.add('oz');
-    e_password_container.classList.remove('dn');
   }
+  if (BYPASS_PASSWORD === true) {
+    e_password.value = (1+2*2*2*5*31*631*79337).toString(2*2*3*3).toUpperCase();
+    submit_password();
+  }
+  // omitted due to bypass
+  // else {
+  //   e_editor_container.classList.add('oz');
+  //   e_password_container.classList.remove('dn');
+  // }
 }
 
 init();
