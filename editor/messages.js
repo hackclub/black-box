@@ -222,9 +222,29 @@ These bugs have been fixed:
 [Awesome!]`
 );
 
+const v0_1_0 = new Message('v0_1_0',
+`## What's new?
+#### Version 0.1.0
+
+These features are now available:
+
+<ul>
+  <li>**Permalinks** &ndash; Use this when you're ready to submit</li>
+</ul>
+
+These bugs have been fixed:
+
+<ul>
+  <li>Fixed static analysis</li>
+</ul>
+
+[Awesome!]`
+);
+
 export default {
   confirm_edit,
   feedback,
   soft_launch,
   v0_1_0rc2,
+  v0_1_0,
 }
