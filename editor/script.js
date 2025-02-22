@@ -423,7 +423,7 @@ e_change_color.onclick = function () {
  */
 e_permalink.onclick = function () {
   const doc = editor_view.state.doc.toString();
-  window.location.href = encodeURI(`${window.location.href.split('?')[0]}?code=${btoa(doc)}`);
+  window.location.href = `${window.location.href.split('?')[0]}?code=${encodeURIComponent(btoa(doc))}`;
 }
 
 /**
