@@ -179,6 +179,10 @@ function ast_node_to_js (node) {
       }
     }
     case 'CallExpression': {
+      // nice try!
+      if (node.base.value === 'eval') {
+        throw new Error('`eval` is a reserved word');
+      }
       const base = ast_node_to_js(node.base);
       const args = node.arguments.map(ast_node_to_js).join(', ');
       // once upon a time this case passed `emu` as the first argument,
@@ -1284,7 +1288,7 @@ function convert_ast () {
 function eval_ast () {
   console.log('[worker] evaling converted AST nodes...');
   ast_as_js.forEach(node => {
-    eval(`"use strict";\n${node}`);
+    eval?.(`"use strict";\n${node}`);
   });
   // function hoisting for `BlackBox* blackbox` - special case
   // TODO: does C allow this in the first place?
