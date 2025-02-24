@@ -183,6 +183,9 @@ function ast_node_to_js (node) {
       if (node.base.value === 'eval') {
         throw new Error('`eval` is a reserved word');
       }
+      if (node.base.value === 'Function') {
+        throw new Error('`Function` is a reserved word');
+      }
       const base = ast_node_to_js(node.base);
       const args = node.arguments.map(ast_node_to_js).join(', ');
       // once upon a time this case passed `emu` as the first argument,
