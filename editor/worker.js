@@ -256,6 +256,11 @@ ___WHILE_${W}()`
       // global declarations are eval-ed immediately, because loops need to be able to inject them
       const def_type = ast_node_to_js(node.defType);
       let value;
+      // yeah
+      if (def_type === 'new String') {
+        emu.globals[node.name] = node.value.value;
+        return '';
+      }
       // TODO: please don't tell me i have to do a hotfix 3
       if (node.value === undefined) {
         value = '';
