@@ -146,6 +146,9 @@ function ast_node_to_js (node) {
       return node.value;
     case 'Type': {
       let js_type;
+      if (node.name === 'Function') {
+        throw new Error('`Function` is a reserved word');
+      }
       if (node.name === 'short' || node.name === 'int' || node.name === 'long' || node.name === 'float' || node.name === 'double') {
         js_type = 'Number';
       } else if (node.name === 'char') {
