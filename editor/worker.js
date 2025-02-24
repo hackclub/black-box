@@ -286,7 +286,7 @@ ___WHILE_${W}()`
     case 'FunctionDeclaration': {
       // no redefinitions
       if (emu.globals[node.name] !== undefined) {
-        throw new Error(`A function named \`${node.name}\` is already defined`);
+        throw new Error(`\`${node.name}\` already exists in the global scope`);
       }
       // no unreachable code
       const return_statement_count = node.body.filter(node => node.type === 'ReturnStatement').length;
