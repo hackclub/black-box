@@ -34,6 +34,7 @@ let active_message;
 
 const editor_view = document.querySelector('.cm-editor').querySelector('.cm-content').cmView.view;
 const e_q = document.getElementById('q');
+const e_reset = document.getElementById('reset');
 const e_latin_phrase = document.getElementById('latin_phrase');
 const e_editor_version = document.getElementById('editor_version');
 const e_feedback = document.getElementById('feedback');
@@ -165,6 +166,11 @@ e_confirm_message.onclick = function () {
     localStorage.setItem('doc', editor_view.state.doc.toString());
     window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
   }
+  // confirm reset
+  if (active_message.name === 'confirm_reset') {
+    localStorage.removeItem('doc');
+    window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
+  }
 }
 
 e_deny_message.onclick = function () {
@@ -179,6 +185,10 @@ e_deny_message.onclick = function () {
 e_q.onclick = function () {
   // active_message = messages.soft_launch.show();
   active_message = messages.launch.show();
+}
+
+e_reset.onclick = function () {
+  active_message = messages.confirm_reset.show();
 }
 
 function try_show_changes (force = false) {

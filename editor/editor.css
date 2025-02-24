@@ -6,6 +6,10 @@ main {
   justify-content:center;
 }
 
+a:hover {
+  cursor:pointer;
+}
+
 button {
   margin:8px;
   padding:0 10px;
@@ -161,17 +165,13 @@ hr {
   font-size:12px;
 }
 
-#q {
+#editor_top_container p span.p {
   position:relative;
   top:-2px;
 }
 
 #latin_phrase {
   text-transform:uppercase;
-}
-
-#q:hover, #editor_version:hover, #feedback:hover {
-  cursor:pointer;
 }
 
 #editor_left_container, #editor_right_container {

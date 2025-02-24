@@ -158,7 +158,17 @@ If you hit Edit, the code you were editing before you viewed this permalink will
 
 [Edit] [Cancel]`,
 true
-)
+);
+
+const confirm_reset = new Message('confirm_reset',
+`## Are you sure?
+#### ...
+
+If you hit Reset, the code you were editing before will be lost forever! (A long time!)
+
+[Reset] [Cancel]`,
+true
+);
 
 const feedback = new Message('feedback',
 `## Feedback
@@ -258,6 +268,7 @@ These bugs have been fixed:
 
 export default {
   confirm_edit,
+  confirm_reset,
   feedback,
   soft_launch,
   launch,
