@@ -134,7 +134,7 @@ function ast_node_to_js (node) {
   switch (node.type) {
     case 'Literal':
       if (typeof node.value === 'string') {
-        return `'${node.value}'`;
+        return JSON.stringify(node.value);
       }
       if (Array.isArray(node.value)) {
         return node.value.map(ast_node_to_js);
@@ -358,14 +358,14 @@ ___WHILE_${W}()`
         }
       }
       // do work
-      const args = node.arguments.map(ast_node_to_js).map(arg => `'${arg}'`).join(', ');
+      const args = node.arguments.map(ast_node_to_js);
       const body = node.body.map(ast_node_to_js).join('\n');
       // these declarations are eval-ed immediately for the same reason given in
       // `GloballetiableDeclaration`
       if (args !== '') {
-        eval(`emu.globals['${node.name}'] = emu.make_function('${node.name}', \`${body}\`, ${args});`)
+        emu.globals[node.name] = emu.make_function(node.name, body, args);
       } else {
-        eval(`emu.globals['${node.name}'] = emu.make_function('${node.name}', \`${body}\`);`)
+        emu.globals[node.name] = emu.make_function(node.name, body);
       }
       return '';
     }
