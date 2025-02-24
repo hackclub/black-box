@@ -1088,7 +1088,7 @@ function new_emu () {
       ) {
         const blackbox_sleep_call = last_match;
         const replacement = `emu.sleeping = true
-await new Promise(resolve => setTimeout(resolve, ${Number(blackbox_sleep_call.ms)}))
+await new Promise(resolve => setTimeout(resolve, ${blackbox_sleep_call.ms}))
 emu.sleeping = false`;
         body = body.substring(0, blackbox_sleep_call.index) + replacement + body.substring(blackbox_sleep_call.index + blackbox_sleep_call.raw.length);
       }
