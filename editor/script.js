@@ -244,7 +244,7 @@ function new_worker () {
   };
   // TODO: this function doesn't work right
   worker.onerror = function (e) {
-    error = e.message;
+    let error = e.message;
     e_status.className = 'error';
     e_status.innerHTML = `Worker error: ${error}`;
     running = false;
