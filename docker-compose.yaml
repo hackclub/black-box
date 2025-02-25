@@ -1,9 +1,0 @@
-version: "3.8"
-
-services:
-  webserver:
-    build: .
-    container_name: express_server
-    restart: unless-stopped
-    ports:
-      - "9999:9999"
