@@ -64,10 +64,11 @@ const extensions = [
 ];
 
 let doc;
-if (params.get('code') !== null) {
-  console.log('[cm] setting code based on URL parameter')
-  doc = atob(decodeURIComponent(params.get('code')));
-} else if (localStorage.getItem('doc') !== null) {
+// if (params.get('code') !== null) {
+//   console.log('[cm] setting code based on URL parameter')
+//   doc = atob(decodeURIComponent(params.get('code')));
+// }
+if (localStorage.getItem('doc') !== null) {
   console.log('[cm] setting code based on local storage')
   doc = localStorage.getItem('doc');
 } else {

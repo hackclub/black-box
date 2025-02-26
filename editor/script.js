@@ -392,6 +392,40 @@ function format (message) {
 }
 
 /**
+ * Make a GET request to the Black Box backend.
+ * @param {string} route
+ * @returns {string|undefined}
+ */
+async function backend_get (route) {
+  const response = await fetch(`https://black-box-backend.a.selfhosted.hackclub.com/${route}`);
+  let text;
+  if (response.ok) {
+    text = await response.text();
+  } else {
+    throw new Error(`Invalid request: GET /${route}`);
+  }
+  return text;
+}
+
+/**
+ * Make a POST request to the Black Box backend.
+ * @param {string} route
+ * @param {string} body
+ * @returns {object|undefined}
+ */
+async function backend_post (route, body) {
+  const response = await fetch(`https://black-box-backend.a.selfhosted.hackclub.com/${route}`, {
+    method: 'POST',
+    body,
+  });
+  let json;
+  if (response.ok) {
+    json = await response.json();
+  }
+  return json;
+}
+
+/**
  * Callback for `#gesture_container` (the button with a speaker emoji).
  * Populate `oscillator`, display `#black_box_container` at full opacity,
  * and play a chime.
@@ -445,11 +479,14 @@ e_change_color.onclick = function () {
 
 /**
  * Callback for `#permalink`.
- * Generate a link to the code in the editor.
+ * Generate a permanent link to the code in the editor.
  */
-e_permalink.onclick = function () {
+e_permalink.onclick = async function () {
   const doc = editor_view.state.doc.toString();
-  window.location.href = `${window.location.href.split('?')[0]}?code=${encodeURIComponent(btoa(doc))}`;
+  // TODO: rejected case
+  backend_post('permagen', doc).then(json => {
+    window.location.href = `${window.location.href.split('?')[0]}?code=${json.permacode}`;
+  });
 }
 
 /**
@@ -542,6 +579,19 @@ async function init () {
   // URL parameters
   params = new URLSearchParams(window.location.search);
   if (params.get('code') !== null) {
+    backend_get(params.get('code')).then(
+      // accepted
+      text => {
+        console.log('[cm] setting code based on URL parameter');
+        editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: text }});
+        e_info_container.classList.remove('dn');
+        e_info.innerHTML = `Loaded permalink <span class="mono">${params.get('code')}</span>`;
+      },
+      // rejected
+      reject_reason => {
+        window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
+      }
+    );
     e_cm_container.className = 'cna';
     e_toggle_view.className = 'dn';
     e_permalink.className = 'dn';
