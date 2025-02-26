@@ -266,6 +266,27 @@ These bugs have been fixed:
 [Awesome!]`
 );
 
+const v0_2_0 = new Message('v0_2_0',
+`## What's new?
+#### Version 0.2.0
+
+These features are now available:
+
+<ul>
+  <li>**Improved permalinks** &ndash; Each permalink is now assigned a 6-character hex code as a slug (<a href="https://github.com/hackclub/black-box/issues/6" target="_blank">#6</a>)</li>
+  <li>**UI improvements** &ndash; Removed audio icon; enabled viewing docs while your code is running (<a href="https://github.com/hackclub/black-box/issues/11" target="_blank">#11</a>)</li>
+</ul>
+
+These bugs have been fixed:
+
+<ul>
+  <li>Fixed another issue with \`blackbox->sleep()\` (<a href="https://github.com/hackclub/black-box/issues/10" target="_blank">#10</a>)</li>
+  <li>Tried to prevent some ACE exploits (I'll admit defeat on this one)</li>
+</ul>
+
+[Awesome!]`
+);
+
 export default {
   confirm_edit,
   confirm_reset,
@@ -274,4 +295,5 @@ export default {
   launch,
   v0_1_0rc2,
   v0_1_0,
+  v0_2_0,
 }
