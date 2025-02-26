@@ -243,12 +243,12 @@ ${inject(body)}
       // instead, we create a plain old function that repeatedly calls itself
       // on an interval until `emu.running` is false or the condition returns `false`.
       let W = while_count++;
-      // TODO: async
-      return `function ___WHILE_${W} () {
+      return `async function ___WHILE_${W} () {
 if (!emu.running) { return null; }
 if ((${condition}) === false) { return null; }
 ${inject(body)}
-setTimeout(___WHILE_${W}, 0)
+await new Promise(resolve => setTimeout(resolve, 0))
+___WHILE_${W}()
 }
 ___WHILE_${W}()`
     }
@@ -1108,7 +1108,7 @@ emu.sleeping = false`;
         // and start the 2 timeouts before it
         matchWithCapturingGroups(
           body,
-          /function ___WHILE_\d+ \(\) {/g
+          /async function ___WHILE_\d+ \(\) {/g
         );
         const loop_signature = last_match;
         const replacement = `emu.interval_id_1 = setInterval(() => emu.globals.on_timeout_1(emu), ${emu.defines.BLACKBOX_TIMEOUT_1})
@@ -1116,6 +1116,7 @@ emu.interval_id_2 = setInterval(() => emu.globals.on_timeout_2(emu), ${emu.defin
 ${loop_signature.raw}`;
         body = body.substring(0, loop_signature.index) + replacement + body.substring(loop_signature.index + loop_signature.raw.length);
       }
+      // console.log(body);
       // 4. create function
       const F = new AsyncFunction(
         'emu',
