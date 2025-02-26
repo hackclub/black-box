@@ -222,14 +222,14 @@ hr {
   flex-direction:column;
 }
 
-#gesture_container {
+/* #gesture_container {
   left:calc(50vw + 8px);
   top:calc(7.5vh + 8px);
-}
+} */
 
-#gesture_container p {
+/* #gesture_container p {
   margin-bottom:0;
-}
+} */
 
 #canvas_container, #controls_container {
   display:var(--bb-display); /* set in /style.css */

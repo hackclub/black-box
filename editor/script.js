@@ -302,6 +302,22 @@ function draw_to_canvas (on_pixels) {
 }
 
 /**
+ * Populate the oscillator if it is undefined.
+ */
+function populate_oscillator () {
+  if (oscillator === undefined) {
+    console.log('[main] populating oscillator');
+    oscillator = new Tone.Oscillator(0, 'triangle').toDestination();
+    oscillator.volume.value = -24;
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        tone([440, 659, 880][i], 63);
+      }, (i * 125) + 50);
+    }
+  }
+}
+
+/**
  * Start the oscillator at a specific frequency.
  * If `ms` is provided, the oscillator will stop after `ms` milliseconds.
  * @param {number} frequency
@@ -380,21 +396,21 @@ function format (message) {
  * Populate `oscillator`, display `#black_box_container` at full opacity,
  * and play a chime.
  */
-e_gesture_container.onclick = function () {
-  oscillator = new Tone.Oscillator(0, 'triangle').toDestination();
-  oscillator.volume.value = -24;
-  e_gesture_container.className = 'dn';
-  e_black_box_container.classList.replace('oh', 'of');
-  e_black_box_container.style.animation = '1s linear 0s fade-in';
-  if (e_toggle_view.innerHTML === 'View docs') {
-    e_toggle_running.disabled = false;
-  }
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => {
-      tone([440, 659, 880][i], 63);
-    }, (i * 125) + 50);
-  }
-}
+// e_gesture_container.onclick = function () {
+//   oscillator = new Tone.Oscillator(0, 'triangle').toDestination();
+//   oscillator.volume.value = -24;
+//   e_gesture_container.className = 'dn';
+//   e_black_box_container.classList.replace('oh', 'of');
+//   e_black_box_container.style.animation = '1s linear 0s fade-in';
+//   if (e_toggle_view.innerHTML === 'View docs') {
+//     e_toggle_running.disabled = false;
+//   }
+//   for (let i = 0; i < 3; i++) {
+//     setTimeout(() => {
+//       tone([440, 659, 880][i], 63);
+//     }, (i * 125) + 50);
+//   }
+// }
 
 /**
  * Callback for `#toggle_view`.
@@ -405,14 +421,14 @@ e_toggle_view.onclick = function () {
     e_docs_container.style.display = 'block';
     e_cm_container.style.display = 'none';
     e_toggle_view.innerHTML = 'View code';
-    e_toggle_running.disabled = true;
+    // e_toggle_running.disabled = true;
   } else {
     e_cm_container.style.display = 'block';
     e_docs_container.style.display = 'none';
     e_toggle_view.innerHTML = 'View docs';
-    if (oscillator !== undefined) {
-      e_toggle_running.disabled = false;
-    }
+    // if (oscillator !== undefined) {
+    //   e_toggle_running.disabled = false;
+    // }
   }
 }
 
@@ -465,12 +481,13 @@ e_toggle_running.onclick = async function () {
     e_toggle_running.innerHTML = 'Start';
     e_status.className = 'warning';
     e_status.innerHTML = 'Status: Stopped';
-    e_toggle_view.disabled = false;
+    // e_toggle_view.disabled = false;
     e_change_color.disabled = false;
     // cancel button check animation frame
     window.cancelAnimationFrame(animation_frame);
   } else {
     blank_matrix();
+    populate_oscillator();
     try {
       // 1. create worker
       console.log('[main] time to start running!');
@@ -501,7 +518,7 @@ e_toggle_running.onclick = async function () {
       e_toggle_running.innerHTML = 'Stop';
       e_status.className = 'success';
       e_status.innerHTML = 'Status: Running';
-      e_toggle_view.disabled = true;
+      // e_toggle_view.disabled = true;
       e_change_color.disabled = true;
       Object.keys(victus.keys).forEach(key => victus.keys[key].press = false);
       animation_frame = window.requestAnimationFrame(check_buttons);
