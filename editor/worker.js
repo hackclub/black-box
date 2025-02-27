@@ -313,6 +313,7 @@ ___WHILE_${W}()`
       for (const statement of node.body) {
         // find every single node anywhere in the statement
         const statement_nodes = find_nodes_of_type('*', statement);
+        // console.log(statement_nodes);
         // the keys of this object are exposed as additional locals
         let object = {};
         // marker
@@ -337,11 +338,17 @@ ___WHILE_${W}()`
             throw_if_unknown(sn, locals.concat(Object.keys(object || {})));
             continue;
           }
-          // if the identifier's position is undefined, it is the base of the call expression
-          // which can be found by looking at the previous node
+          // if the identifier's position is undefined, it is either the base of a call expression,
+          // or the reference associated with an index expression.
+          // we can determine which is which by looking at the previous node.
           if (sn.pos === undefined) {
-            analyze_this_many_arguments = prev_sn.arguments.filter(arg => arg !== undefined).length;
-            continue;
+            if (prev_sn.type === 'CallExpression') {
+              analyze_this_many_arguments = prev_sn.arguments.filter(arg => arg !== undefined).length;
+              continue;
+            } else if (prev_sn.type === 'IndexExpression') {
+              // it seems to work if we just skip it?
+              continue;
+            }
           }
           // if the identifier can be resolved to a global, track it
           if (emu.globals[sn.value] !== undefined) {
