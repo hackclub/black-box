@@ -372,14 +372,10 @@ function format (message) {
   // fix the thing that cparse does
   // note to self: make sure cparse's `pos.file` stays empty, otherwise this regex
   // will have to change
-  const cparse_message_start = formatted.match(/:(\d+):/);
-  if (cparse_message_start !== null) {
-    const cparse_line_number = Number(cparse_message_start[1]);
-    // correct for all the extra stuff we add to the code
-    const ln = cparse_line_number - blackbox_h.split('\n').length - blackbox_struct_definitions.split('\n').length - 2;
-    formatted = formatted.replace(cparse_message_start[0], '');
-    formatted = `${formatted} (line ${ln})`;
-  }
+  // chop the filename
+  formatted = formatted.replace(/\.\/intermediate_files\/[-A-Za-z0-9-_=]+\.c/g, 'user_code.c');
+  // trim to one line
+  formatted = formatted.split('\n')[0];
   return formatted;
 }
 
