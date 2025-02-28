@@ -346,6 +346,10 @@ hr {
   background-color:#444444aa !important;
 }
 
+.ͼc { /* true or false */
+  color:#86b3f7;
+}
+
 .ͼd { /* number */
   color:#c7e916;
 }
