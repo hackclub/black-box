@@ -32,6 +32,14 @@ let _on_pixels = [];
 let messages;
 let active_message;
 
+let old_button_state = {
+  up: false, 
+  down: false,
+  left: false,
+  right: false,
+  select: false,
+};
+
 const editor_view = document.querySelector('.cm-editor').querySelector('.cm-content').cmView.view;
 const e_q = document.getElementById('q');
 const e_reset = document.getElementById('reset');
@@ -75,33 +83,6 @@ document.addEventListener('DOMContentLoaded', victus.setup({
   h: 160,
   color: '#222',
 }));
-
-/**
- * Mock header contents.
- */
-const blackbox_h = ``;
-
-/**
- * Mock struct definitions.
- * We need these in order to allow declarations of type `Pixel*`, `Matrix*`,
- * `Slice*`, `Piezo*`, and `BlackBox*`.
- */
-const blackbox_struct_definitions = `struct Pixel {
-  int value;
-}
-
-struct Matrix {
-  Pixel* pixels[64];
-}
-
-struct Slice {
-  Pixel** ptr;
-  int len;
-}
-
-struct BlackBox {
-  Matrix* matrix;
-}`;
 
 /**
  * Submit a password.
@@ -343,29 +324,41 @@ function no_tone () {
  * Check the state of the buttons.
  */
 async function check_buttons () {
-  // TODO: don't repeat yourself
-  if (victus.keys.ArrowUp?.press) {
-    e_up.className = 'active';
-    setTimeout(() => e_up.className = '', 125);
-    await send_message('up');
-  } else if (victus.keys.ArrowDown?.press) {
-    e_down.className = 'active';
-    setTimeout(() => e_down.className = '', 125);
-    await send_message('down');
-  } else if (victus.keys.ArrowLeft?.press) {
-    e_left.className = 'active';
-    setTimeout(() => e_left.className = '', 125);
-    await send_message('left');
-  } else if (victus.keys.ArrowRight?.press) {
-    e_right.className = 'active';
-    setTimeout(() => e_right.className = '', 125);
-    await send_message('right');
-  } else if (victus.keys.x?.press) {
-    e_select.className = 'active';
-    setTimeout(() => e_select.className = '', 125);
-    await send_message('select');
+  // FIXME: this is better than last time but still super hacky...
+  // fix it at some point?
+
+  let new_button_state = {
+    up: (victus.keys.ArrowUp?.held) ?? false,
+    down: (victus.keys.ArrowDown?.held) ?? false,
+    left: (victus.keys.ArrowLeft?.held) ?? false,
+    right: (victus.keys.ArrowRight?.held) ?? false,
+    select: (victus.keys.x?.held) ?? false,
+  };
+
+  let button_elems = {
+    up: e_up,
+    down: e_down,
+    left: e_left,
+    right: e_right,
+    select: e_select,
   }
-  Object.keys(victus.keys).forEach(key => victus.keys[key].press = false);
+
+  for (const [button, val] of Object.entries(new_button_state)) {
+    if (old_button_state[button] == val) continue;
+    
+    // button state has changed since last time
+
+    if (val) {
+      button_elems[button].className = 'active';
+    } else {
+      button_elems[button].className = '';
+    }
+
+    send_message("button", { button: button, state: val });
+  }
+
+  old_button_state = new_button_state;
+
   animation_frame = window.requestAnimationFrame(check_buttons);
 }
 
@@ -527,29 +520,20 @@ e_toggle_running.onclick = async function () {
     populate_oscillator();
     try {
       // 1. create worker
-      console.log('[main] time to start running!');
       console.log('[main] creating worker...');
       worker = new_worker();
       console.log('[main] finished creating worker');
-      // 2. create emulator
-      await send_message('create_emu');
-      // 3. create AST
+      // 2. initialize emulator
+      await send_message('initialize_emu');
+      // 3. compile the code
       await send_message(
-        'create_ast',
-        { doc: blackbox_h + '\n\n' + blackbox_struct_definitions + '\n\n' + editor_view.state.doc.toString() }
+        'compile_code',
+        { code: editor_view.state.doc.toString() }
       );
-      // 4. run checks on the AST
-      await send_message('sanity_check');
-      // 5. convert the AST to JavaScript
-      await send_message('convert_ast');
-      // 6. eval each
-      await send_message('eval_ast');
-      // 7. replace the matrix with a deeply nested proxy
-      await send_message('create_matrix_proxy');
-      // 8. call main
+      // 5. call main
       await send_message('main');
       // the main message returns immediately, so we can put these lines here again
-      // 9. update UI, start checking buttons
+      // 6. update UI, start checking buttons
       e_info_container.classList.remove('dn');
       e_info.innerHTML = 'Use arrow keys + X';
       e_toggle_running.innerHTML = 'Stop';
