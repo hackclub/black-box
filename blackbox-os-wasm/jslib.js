@@ -26,7 +26,7 @@ mergeInto(LibraryManager.library, {
     globalThis.updateDisplay();
   },
   hal_matrix_get_arr: function(ptr) {
-    let arr = new Int8Array(Module.HEAP8.buffer, ptr, 8);
+    let arr = new Uint8Array(Module.HEAP8.buffer, ptr, 8);
     // convert an array of arrays of booleans to an array of ints
     for (let i = 0; i < 8; i++) {
       arr[i] = parseInt(globalThis.displayState[i].map(function(bit) {
