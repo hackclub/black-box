@@ -9,7 +9,13 @@ let compiler_endpoint = "";
 
 let module;
 let startTime;
-let displayState = new Array(64).fill(false);
+let displayState = [];
+
+for (let i=0; i<8; i++) {
+  displayState[i] = new Array(8).fill(false);
+}
+
+globalThis.displayState = displayState;
 
 let run = false;
 let ticking = false;
@@ -22,16 +28,20 @@ let buttonState = {
   select: false
 }
 
+globalThis.buttonState = buttonState;
+
 function millis() {
   return Math.floor(performance.now() - startTime);
 }
+
+globalThis.millis = millis;
 
 function tickLoop() {
   if (!run) return;
 
   let nextTimestamp = module._plat_tick(millis());
 
-  console.log("[worker]", nextTimestamp);
+  //console.log("[worker]", nextTimestamp);
 
   // no timers need the event loop to be reticked
 
@@ -43,7 +53,7 @@ function tickLoop() {
   }
 
   let now = millis();
-  let delta = now - nextTimestamp;
+  let delta = nextTimestamp - now;
 
   if (delta <= 0) delta = 0;
 
@@ -60,22 +70,32 @@ function updateDisplay() {
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
       const i = (y * 8) + x;
-      if (displayState[i].is_on()) {
+      if (displayState[y][x]) {
         on_pixels.push(i);
       }
     }
   }
 
+  console.log(displayState);
+  console.log(on_pixels);
+
+
   self.postMessage({ message: 'draw_to_canvas', on_pixels });
 }
+
+globalThis.updateDisplay = updateDisplay;
 
 function tone(freq) {
   self.postMessage({ message: 'tone', frequency: freq });
 }
 
+globalThis.tone = tone;
+
 function noTone() {
   self.postMessage({ message: 'no_tone' });
 }
+
+globalThis.noTnne = noTone;
 
 /**
  * Create a new message.
