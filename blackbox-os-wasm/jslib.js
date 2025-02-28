@@ -1,4 +1,4 @@
-// globals: millis, tone, noTone, displayState, updateDisplay, buttonState
+// globals: millis, tone, noTone, displayState, updateDisplay, buttonState, panic
 
 mergeInto(LibraryManager.library, {
   hal_millis: function() {
@@ -66,6 +66,6 @@ mergeInto(LibraryManager.library, {
     const str = UTF8ToString(ptr);
     console.error("[jslib] panic:", str);
 
-    throw new Error(`panic: ${str}`);
+    globalThis.panic(str);
   }
 });

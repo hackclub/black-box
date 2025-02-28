@@ -28,6 +28,18 @@ let buttonState = {
   select: false
 }
 
+function panic(msg) {
+  run = false;
+
+  setTimeout(() => {
+    throw new Error(`panic: ${msg}`);
+  }, 0);
+
+  throw new Error(`panic: ${msg}`);
+}
+
+globalThis.panic = panic;
+
 globalThis.buttonState = buttonState;
 
 function millis() {

@@ -238,7 +238,6 @@ function new_worker () {
     let error = e.message;
     e_status.className = 'error';
     e_status.innerHTML = `Worker error: ${error}`;
-    running = false;
   };
   return worker;
 }
