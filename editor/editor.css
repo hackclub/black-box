@@ -378,6 +378,42 @@ hr {
   color:#999;
 }
 
+#cm_container.cna .cm-line {
+  color:#aaa;
+}
+
+#cm_container.cna .ͼc {
+  color:#4973b3;
+}
+
+#cm_container.cna .ͼd {
+  color:#92a823;
+}
+
+#cm_container.cna .ͼe {
+  color:#ab372c;
+}
+
+#cm_container.cna .ͼb {
+  color:#ad4777;
+}
+
+#cm_container.cna .ͼi {
+  color:#92a823;
+}
+
+#cm_container.cna .ͼg {
+  color:#3682a3;
+}
+
+#cm_container.cna .ͼ5 {
+  color:#995f2e;
+}
+
+#cm_container.cna .ͼm {
+  color:#666;
+}
+
 /* ignore changes from /style.css */
 @media screen and (max-width:768px) {
   #gesture_container, #controls_container {
