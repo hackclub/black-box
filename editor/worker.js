@@ -248,9 +248,9 @@ if (!emu.running) { return null; }
 if ((${condition}) === false) { return null; }
 ${inject(body)}
 await new Promise(resolve => setTimeout(resolve, 0))
-___WHILE_${W}()
+await ___WHILE_${W}()
 }
-___WHILE_${W}()`
+await ___WHILE_${W}()`
     }
     case 'ReturnStatement': {
       const value = node.value !== undefined ? ast_node_to_js(node.value) : '';
