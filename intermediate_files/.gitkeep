@@ -1,0 +1,1 @@
+when the server is in use, this folder gets filled with c, wasm, and js files. this file exists to force git to keep the folder around when it's empty
