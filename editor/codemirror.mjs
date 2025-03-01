@@ -6,31 +6,22 @@ import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightActiveLine, highlightActiveLineGutter, highlightSpecialChars, drawSelection, rectangularSelection, keymap, ViewPlugin } from '@codemirror/view';
 import { c } from '@codemirror/legacy-modes/mode/clike';
 
-const default_doc = `#include "blackbox.h"
+const default_doc = `// Core definitions for black box
+#include "blackbox.h"
 
-// VEXATA QUAESTIO
+// An example task that blinks a single pixel
+void blink(task_handle self) {
+  // Toggle the pixel at (3, 3)
+  bb_matrix_toggle_pos(3, 3);
+}
 
-#define BLACKBOX_TIMEOUT_1 1
-#define BLACKBOX_TIMEOUT_2 125
-
-BlackBox* blackbox;
-
-// These functions are called when the buttons are pressed
-void on_up() {}
-void on_down() {}
-void on_left() {}
-void on_right() {}
-void on_select() {}
-
-// These functions are called repeatedly
-void on_timeout_1() {}
-void on_timeout_2() {}
-
-// Your main loop goes here!
-void main() {
-  while (1) {
-    // COGITO ERGO SUM
-  }
+// Your main code goes here!
+// Set up global variables, timers, events, etc.
+void setup() {
+  // COGITO ERGO SUM
+  
+  // Run \`blink\` every 500ms (every half second)
+  task_create_interval(blink, 500);
 }`;
 
 let params = new URLSearchParams(window.location.search);
