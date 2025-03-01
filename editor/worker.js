@@ -482,6 +482,10 @@ class AST {
   where (key, value) {
     const steps = key.split('.');
     let v = this.ast[this.active_index][steps[0]];
+    if (v === undefined) {
+      this.ok = false;
+      return this;
+    }
     for (const step of steps.slice(1)) {
       v = v[step];
       if (v === undefined) {
