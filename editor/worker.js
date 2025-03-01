@@ -20,6 +20,8 @@ globalThis.displayState = displayState;
 let run = false;
 let ticking = false;
 
+let eventActivations = new Array(32).fill(0);
+
 let buttonState = {
   up: false,
   down: false,
@@ -47,6 +49,28 @@ function millis() {
 }
 
 globalThis.millis = millis;
+
+function pullEventActivations() {
+  let arr = eventActivations;
+  eventActivations = new Array(32).fill(0);
+
+  return arr;
+}
+
+globalThis.pullEventActivations = pullEventActivations;
+
+function pushSingleEvent(event_id) {
+  console.log("[worker] pushSingleEvent:", event_id);
+
+  eventActivations[event_id]++;
+
+  tickSoon();
+}
+
+function tickSoon() {
+  ticking = true;
+  setTimeout(tickLoop, 0);
+}
 
 function tickLoop() {
   if (!run) return;
@@ -87,10 +111,6 @@ function updateDisplay() {
       }
     }
   }
-
-  console.log(displayState);
-  console.log(on_pixels);
-
 
   self.postMessage({ message: 'draw_to_canvas', on_pixels });
 }
@@ -163,8 +183,6 @@ async function compile_code(args) {
   console.log("[worker] user_out loaded");
   module = await user_out.default();
   console.log("[worker] Module initialized");
-
-  console.log("[main] test stuff done");
 }
 
 /**
@@ -197,7 +215,7 @@ async function main() {
 
 
   console.log("[worker] entering tickloop");
-  tickLoop();
+  tickSoon();
 }
 
 /**
@@ -212,7 +230,22 @@ async function button(data) {
     return;
   }
 
-  // TODO: fire event to event loop
+  const map = {
+    "up_press": 0,
+    "down_press": 1,
+    "left_press": 2,
+    "right_press": 3,
+    "select_press": 4,
+    "up_release": 5,
+    "down_release": 6,
+    "left_release": 7,
+    "right_release": 8,
+    "select_release": 9,    
+  }
+
+  const id = map[data.button + (data.state ? "_press" : "_release")];
+
+  pushSingleEvent(id);
 }
 
 /**

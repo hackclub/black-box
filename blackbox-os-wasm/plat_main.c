@@ -2,6 +2,7 @@
 #include "executor_private.h"
 #include "user.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <emscripten.h>
 
@@ -11,10 +12,12 @@ void plat_init() {
   setup(); // call into user setup
 }
 
+extern void plat_get_events(uint8_t* events);
+
 EMSCRIPTEN_KEEPALIVE
 unsigned int plat_tick(unsigned int current_time) {
-  // TODO: handle properly
-  uint8_t events[32] = {0};
+  uint8_t events[32];
+  plat_get_events(events);
 
   uint32_t next_ts = executor_tick_loop(current_time, events);
 

@@ -528,6 +528,7 @@ e_toggle_running.onclick = async function () {
       // 5. call main
       await send_message('main');
       // the main message returns immediately, so we can put these lines here again
+      console.log('[main] done invoking main');
       // 6. update UI, start checking buttons
       e_info_container.classList.remove('dn');
       e_info.innerHTML = 'Use arrow keys + X';

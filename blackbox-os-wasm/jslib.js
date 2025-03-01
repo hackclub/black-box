@@ -1,4 +1,5 @@
-// globals: millis, tone, noTone, displayState, updateDisplay, buttonState, panic
+// globals: millis, tone, noTone, displayState, updateDisplay, buttonState,
+// panic, pullEventActivations
 
 mergeInto(LibraryManager.library, {
   hal_millis: function() {
@@ -67,5 +68,14 @@ mergeInto(LibraryManager.library, {
     console.error("[jslib] panic:", str);
 
     globalThis.panic(str);
+  },
+  plat_get_events: function(ptr) {
+    let arr = new Uint8Array(Module.HEAP8.buffer, ptr, 32);
+
+    const activs = pullEventActivations();
+
+    for (let i=0; i<activs.length; i++) {
+      arr[i] = activs[i];
+    }
   }
 });
