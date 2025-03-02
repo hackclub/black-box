@@ -521,6 +521,8 @@ e_toggle_running.onclick = async function () {
       // 2. initialize emulator
       await send_message('initialize_emu');
       // 3. compile the code
+      e_status.className = 'warning';
+      e_status.innerHTML = 'Status: Compiling...';
       await send_message(
         'compile_code',
         { code: editor_view.state.doc.toString() }
