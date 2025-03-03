@@ -127,7 +127,7 @@ function noTone() {
   self.postMessage({ message: 'no_tone' });
 }
 
-globalThis.noTnne = noTone;
+globalThis.noTone = noTone;
 
 /**
  * Create a new message.
