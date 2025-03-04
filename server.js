@@ -29,6 +29,9 @@ app.get("/script.js", (req, res) => {
 app.get("/favicon.svg", (req, res) => {
     res.sendFile(__dirname + '/favicon.svg');
     });
+app.get('/docs/api.md', (req, res) => {
+    res.sendFile(__dirname + '/docs/api.md');
+    })
 
 function generateCodeId(code){
     return crypto.createHash('sha256').update(code).digest('base64url');

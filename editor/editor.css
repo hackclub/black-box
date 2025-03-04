@@ -36,6 +36,12 @@ hr {
   margin: 0.75rem 0 2.25rem 0;
 }
 
+pre {
+  margin-bottom:8px;
+  color:antiquewhite;
+  white-space:pre-wrap;
+}
+
 #password_container, #editor_container {
   display:flex;
   height:100vh;
@@ -205,7 +211,6 @@ hr {
 
 #docs_container h4 {
   text-transform:none;
-  margin-bottom:0;
   display:inline-block;
 }
 
@@ -270,21 +275,22 @@ hr {
   text-decoration:none;
 }
 
-.field, .method, #docs_container h4 {
+.item, #docs_container h4 {
   scroll-margin-top:18px;
 }
 
-.field, .method {
+.item {
   margin-bottom:0;
   display:inline-block;
 }
 
-.field_description, .method_description {
+.item_description {
   color:#aaa;
   font-size:14px;
+  margin-bottom:8px
 }
 
-.method_description b {
+.item_description b {
   color:#ccc
 }
 
