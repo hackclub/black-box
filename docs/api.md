@@ -185,6 +185,23 @@ task_handle task_create_event(task_target target, event_mask events);
 Register the given function as an event handler, to be run whenever the specified event(s) occur.\
 Returns a task handle that can be used to manipulate the task, or `0` if the task failed to create.
 
+The following values are valid as events:
+```c
+// button presses
+EVENT_PRESS_UP
+EVENT_PRESS_DOWN
+EVENT_PRESS_LEFT
+EVENT_PRESS_RIGHT
+EVENT_PRESS_SELECT
+
+// button releases
+EVENT_RELEASE_UP
+EVENT_RELEASE_DOWN
+EVENT_RELEASE_LEFT
+EVENT_RELEASE_RIGHT
+EVENT_RELEASE_SELECT
+```
+
 #### task_pause
 ```c
 void task_pause(task_handle handle);
