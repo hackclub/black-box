@@ -176,11 +176,7 @@ function generate_docs (text) {
   console.log('[docs] finished generating docs');
   // hash
   if (window.location.hash === '') { return; }
-  if (
-    window.location.hash.startsWith('#class') ||
-    window.location.hash.startsWith('#field') ||
-    window.location.hash.startsWith('#method')
-  ) {
+  if (window.location.hash.startsWith('#docs')) {
     console.log(`[docs] highlighting ${window.location.hash}`);
     e_docs_container.style.display = 'block';
     e_cm_container.style.display = 'none';
