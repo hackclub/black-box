@@ -369,13 +369,17 @@ async function check_buttons () {
 function format (message) {
   // make any parts of the message surrounded by backticks monospace
   let formatted = message.replace(/`(.+?)`/g, '<span class="mono">$1</span>');
-  // fix the thing that cparse does
-  // note to self: make sure cparse's `pos.file` stays empty, otherwise this regex
-  // will have to change
   // chop the filename
   formatted = formatted.replace(/\.\/intermediate_files\/[-A-Za-z0-9-_=]+\.c/g, 'user_code.c');
-  // trim to one line
-  formatted = formatted.split('\n')[0];
+  // trim to the line that contains "error:"
+  let lines = formatted.split('\n');
+  let error_line = lines.find(line => line.includes('error:'));
+  if (error_line !== undefined) {
+    formatted = error_line;
+  } else {
+    // if there is no line with "error:", just display the first line
+    formatted = lines[0];
+  }
   return formatted;
 }
 
