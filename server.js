@@ -4,13 +4,12 @@ const { promisify } = require('util');
 const exec = promisify(require('child_process').exec)
 const fs = require('fs/promises');
 const crypto = require('crypto');
-const argv = require('minimist')(process.argv.slice(2));
 
 const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-const port = argv.port || 3000;
+const port = process.env.PORT || 3000;
 
 // static files
 app.use('/editor', express.static('editor'));
