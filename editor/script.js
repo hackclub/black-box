@@ -72,7 +72,6 @@ const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
 const e_permalink = document.getElementById('permalink');
 const e_edit = document.getElementById('edit');
-const e_gesture_container = document.getElementById('gesture_container');
 const e_status = document.getElementById('status');
 
 const BYPASS_PASSWORD = true;
@@ -416,27 +415,6 @@ async function backend_post (route, body) {
   }
   return json;
 }
-
-/**
- * Callback for `#gesture_container` (the button with a speaker emoji).
- * Populate `oscillator`, display `#black_box_container` at full opacity,
- * and play a chime.
- */
-// e_gesture_container.onclick = function () {
-//   oscillator = new Tone.Oscillator(0, 'triangle').toDestination();
-//   oscillator.volume.value = -24;
-//   e_gesture_container.className = 'dn';
-//   e_black_box_container.classList.replace('oh', 'of');
-//   e_black_box_container.style.animation = '1s linear 0s fade-in';
-//   if (e_toggle_view.innerHTML === 'View docs') {
-//     e_toggle_running.disabled = false;
-//   }
-//   for (let i = 0; i < 3; i++) {
-//     setTimeout(() => {
-//       tone([440, 659, 880][i], 63);
-//     }, (i * 125) + 50);
-//   }
-// }
 
 /**
  * Callback for `#toggle_view`.
