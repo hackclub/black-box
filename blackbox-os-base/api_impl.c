@@ -123,6 +123,60 @@ void bb_matrix_all_off() {
   hal_matrix_set_arr(all_off);
 }
 
+/// Slices
+
+void bb_slice_all_on(uint8_t start, uint8_t end) {
+  uint8_t matrix_state[8];
+  hal_matrix_get_arr(matrix_state);
+
+  for (int i = start; i <= end; i++) {
+    int x = i % 8;
+    int y = (i - (i % 8)) / 8;
+    // OR to flip led on
+    matrix_state[y] = (matrix_state[y] | 1 << (7 - x));
+  }
+
+  hal_matrix_set_arr(matrix_state);
+}
+
+void bb_slice_all_off(uint8_t start, uint8_t end) {
+  uint8_t matrix_state[8];
+  hal_matrix_get_arr(matrix_state);
+
+  for (int i = start; i <= end; i++) {
+    int x = i % 8;
+    int y = (i - (i % 8)) / 8;
+    // AND with everything but our bit of interest to flip led off
+    matrix_state[y] = (matrix_state[y] & ~(1 << (7 - x)));
+  }
+
+  hal_matrix_set_arr(matrix_state);
+}
+
+// FIXME: this is a naive implementation based on the old JavaScript
+void bb_slice_set_int(uint8_t start, uint8_t end, uint32_t x) {
+  uint8_t matrix_state[8];
+  hal_matrix_get_arr(matrix_state);
+
+  for (int i = 0; i < 32; i++) {
+    if (x >> i == 0) {
+      break;
+    }
+    int index = end - i;
+    int index_x = index % 8;
+    int index_y = (index - (index % 8)) / 8;
+    if ((x >> i) & 1 == 1) {
+      // OR to flip led on
+      matrix_state[index_y] = (matrix_state[index_y] | 1 << (7 - index_x));
+    } else {
+      // AND with everything but our bit of interest to flip led off
+      matrix_state[index_y] = (matrix_state[index_y] & ~(1 << (7 - index_x)));
+    }
+  }
+
+  hal_matrix_set_arr(matrix_state);
+}
+
 /// Synchronous Input
 
 bool bb_get_button(bb_button button) {

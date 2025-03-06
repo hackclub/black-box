@@ -102,6 +102,14 @@ void bb_matrix_all_on();
  */
 void bb_matrix_all_off();
 
+/// Slices
+
+void bb_slice_all_on(uint8_t start, uint8_t end);
+
+void bb_slice_all_off(uint8_t start, uint8_t end);
+
+void bb_slice_set_int(uint8_t start, uint8_t end, uint32_t x);
+
 /// Synchronous Input
 
 typedef enum {
