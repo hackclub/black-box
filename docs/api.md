@@ -106,7 +106,7 @@ A button on the Black Box device.
 
 ### Methods
 
-#### `bb_get_button`
+#### bb_get_button
 ```c
 bool bb_get_button(bb_button button);
 ```
