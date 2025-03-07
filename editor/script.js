@@ -127,7 +127,7 @@ e_password.onkeydown = function (e) {
 e_submit_password.onclick = submit_password;
 
 window.onresize = e_message_text_container.onscroll = function () {
-  if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight - 20) {
+  if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 1) {
     e_confirm_message.disabled = false;
     e_deny_message.disabled = false;
   }
@@ -170,8 +170,8 @@ e_deny_message.onclick = function () {
 }
 
 e_q.onclick = function () {
-  // active_message = messages.soft_launch.show();
-  active_message = messages.launch.show();
+  active_message = messages.launch;
+  active_message.show();
 }
 
 /**
@@ -210,25 +210,29 @@ e_example_gol.onclick = function () {
 }
 
 e_reset.onclick = function () {
-  active_message = messages.confirm_reset.show();
+  active_message = messages.confirm_reset;
+  active_message.show();
 }
 
 function try_show_changes (force = false) {
   const V = e_editor_version.innerHTML;
   const messages_key = V.replaceAll('.', '_');
   if (force) {
-    active_message = messages[messages_key].show();
+    active_message = messages[messages_key];
+    active_message.show();
     return;
   }
   if (localStorage.getItem('unlocked') === '1' && localStorage.getItem('version') !== messages_key) {
-    active_message = messages[messages_key].show();
+    active_message = messages[messages_key];
+    active_message.show();
   }
 }
 
 e_editor_version.onclick = () => try_show_changes(true);
 
 e_feedback.onclick = function () {
-  active_message = messages.feedback.show();
+  active_message = messages.feedback;
+  active_message.show();
 }
 
 /**
@@ -528,7 +532,8 @@ e_permalink.onclick = async function () {
  * Display confirmation message.
  */
 e_edit.onclick = function () {
-  active_message = messages.confirm_edit.show();
+  active_message = messages.confirm_edit;
+  active_message.show();
 }
 
 /**
