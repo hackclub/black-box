@@ -33,6 +33,8 @@ let buttonState = {
 function panic(msg) {
   run = false;
 
+  self.postMessage({ message: 'console_write', text: msg, panic: true });
+
   setTimeout(() => {
     throw new Error(`panic: ${msg}`);
   }, 0);
@@ -128,6 +130,12 @@ function noTone() {
 }
 
 globalThis.noTone = noTone;
+
+function consoleWrite(s) {
+  self.postMessage({ message: 'console_write', text: s, panic: false });
+}
+
+globalThis.consoleWrite = consoleWrite;
 
 /**
  * Create a new message.

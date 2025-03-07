@@ -72,6 +72,7 @@ const e_right = document.getElementById('right');
 const e_select = document.getElementById('select');
 const e_info_container = document.getElementById('info_container');
 const e_info = document.getElementById('info');
+const e_debug = document.getElementById('debug');
 const e_toggle_running = document.getElementById('toggle_running');
 const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
@@ -271,6 +272,14 @@ function new_worker () {
     }
     if (e.data.message === 'no_tone') {
       oscillator.stop();
+    }
+    if (e.data.message === 'console_write') {
+      const p = document.createElement('p');
+      p.innerText = e.data.text;
+      if (e.data.panic) {
+        p.className = 'panic';
+      }
+      e_debug.appendChild(p);
     }
   };
   // TODO: this function doesn't work right
@@ -569,6 +578,7 @@ e_toggle_running.onclick = async function () {
       // the main message returns immediately, so we can put these lines here again
       console.log('[main] done invoking main');
       // 6. update UI, start checking buttons
+      e_debug.innerHTML = '';
       e_info_container.classList.remove('dn');
       e_info.innerHTML = 'Use arrow keys + X';
       e_toggle_running.innerHTML = 'Stop';

@@ -62,6 +62,7 @@ mergeInto(LibraryManager.library, {
   },
   hal_console_write: function(ptr) {
     console.log(UTF8ToString(ptr));
+    globalThis.consoleWrite(UTF8ToString(ptr));
   },
   hal_panic: function(ptr) {
     const str = UTF8ToString(ptr);
