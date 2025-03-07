@@ -68,6 +68,37 @@ void bb_matrix_all_off();
 
 Turn all LEDs in the matrix off.
 
+## Slices
+
+### Methods
+
+#### bb_slice_all_on
+```c
+void bb_slice_all_on(uint8_t start, uint8_t end);
+```
+
+Turn on all of the pixels in the matrix from index `start` to index `end`, both inclusive.\
+`0` represents the top left corner of the matrix.\
+Higher indices move through the matrix left-to-right, top-to-bottom.
+
+#### bb_slice_all_off
+```c
+void bb_slice_all_off(uint8_t start, uint8_t end);
+```
+
+Turn off all of the pixels in the matrix from index `start` to index `end`, both inclusive.\
+`0` represents the top left corner of the matrix.\
+Higher indices move through the matrix left-to-right, top-to-bottom.
+
+#### bb_slice_set_int
+```c
+void bb_slice_set_int(uint8_t start, uint8_t end, uint32_t x);
+```
+
+Set the pixels in the matrix from index `start` to index `end`, both inclusive, according to the bits of `x`.
+`0` represents the top left corner of the matrix.\
+Higher indices move through the matrix left-to-right, top-to-bottom.
+
 ## Piezo
 
 ### Methods
