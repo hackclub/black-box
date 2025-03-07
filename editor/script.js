@@ -29,6 +29,8 @@ let animation_frame;
 // this allows us to do instant color changes
 let _on_pixels = [];
 
+let code_before_example;
+
 let messages;
 let active_message;
 
@@ -42,10 +44,13 @@ let old_button_state = {
 
 const editor_view = document.querySelector('.cm-editor').querySelector('.cm-content').cmView.view;
 const e_q = document.getElementById('q');
-const e_reset = document.getElementById('reset');
+const e_example_tasks = document.getElementById('example_tasks');
+const e_example_puzzle = document.getElementById('example_puzzle');
+const e_example_gol = document.getElementById('example_gol');
 const e_latin_phrase = document.getElementById('latin_phrase');
 const e_editor_version = document.getElementById('editor_version');
 const e_feedback = document.getElementById('feedback');
+const e_reset = document.getElementById('reset');
 const e_password_container = document.getElementById('password_container');
 const e_password = document.getElementById('password');
 const e_submit_password = document.getElementById('submit_password');
@@ -72,6 +77,7 @@ const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
 const e_permalink = document.getElementById('permalink');
 const e_edit = document.getElementById('edit');
+const e_close_example = document.getElementById('close_example');
 const e_status = document.getElementById('status');
 
 const BYPASS_PASSWORD = true;
@@ -165,6 +171,41 @@ e_deny_message.onclick = function () {
 e_q.onclick = function () {
   // active_message = messages.soft_launch.show();
   active_message = messages.launch.show();
+}
+
+/**
+ * Load an example program.
+ * @param {string} example
+ */
+async function load_example (example) {
+  get_text(`/examples/${example}.c`).then(text => {
+    if (localStorage.getItem('code_before_example') === null) {
+      code_before_example = editor_view.state.doc.toString();
+      localStorage.setItem('code_before_example', code_before_example);
+    }
+    editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: text }});
+    e_permalink.className = 'dn';
+    e_close_example.className = '';
+  });
+}
+
+e_close_example.onclick = function () {
+  localStorage.removeItem('code_before_example');
+  editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: code_before_example }});
+  e_close_example.className = 'dn';
+  e_permalink.className = '';
+}
+
+e_example_tasks.onclick = async function () {
+  load_example('tasks');
+}
+
+e_example_puzzle.onclick = function () {
+  load_example('puzzle');
+}
+
+e_example_gol.onclick = function () {
+  load_example('gol');
 }
 
 e_reset.onclick = function () {
@@ -383,6 +424,20 @@ function format (message) {
 }
 
 /**
+ * Fetch the contents of a file as text.
+ * @param {string} url
+ * @returns {string}
+ */
+async function get_text (url) {
+  const response = await fetch(url, { cache: 'no-cache' });
+  let text;
+  if (response.ok) {
+    text = await response.text();
+  }
+  return text;
+}
+
+/**
  * Make a GET request to the Black Box backend.
  * @param {string} route
  * @returns {string|undefined}
@@ -538,6 +593,10 @@ async function init () {
   messages = messages_js.default;
   // cookie
   unlocked = localStorage.getItem('unlocked') ?? '0';
+  if (localStorage.getItem('code_before_example') !== null) {
+    editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: localStorage.getItem('code_before_example') }});
+    localStorage.removeItem('code_before_example');
+  }
   // version check
   try_show_changes();
   // URL parameters

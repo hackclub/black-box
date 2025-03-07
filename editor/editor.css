@@ -10,6 +10,10 @@ a:hover {
   cursor:pointer;
 }
 
+a.disabled:hover {
+  cursor:default;
+}
+
 button {
   margin:8px;
   padding:0 10px;

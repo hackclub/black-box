@@ -15,6 +15,7 @@ const port = process.env.PORT || 3000;
 app.use('/editor', express.static('editor'));
 app.use('/assets', express.static('assets'));
 app.use('/intermediate_files', express.static('intermediate_files'));
+app.use('/examples', express.static('examples'));
 // static files in root: index.hrml, style.css, script.js, favicon.svg
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
