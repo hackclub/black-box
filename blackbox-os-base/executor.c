@@ -16,7 +16,7 @@
 
 // maximum number of tasks that can be executed
 // each task takes 24 bytes of global memory (24 byte struct + 4 byte queue)
-#define NUM_TASKS 8
+#define NUM_TASKS 16
 
 // number of distinct events the system can handle
 // this is limited to 32 as each one occupies a bit in a uint32
