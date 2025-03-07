@@ -286,11 +286,10 @@ function new_worker () {
       e_debug.appendChild(p);
     }
   };
-  // TODO: this function doesn't work right
   worker.onerror = function (e) {
     let error = e.message;
     e_status.className = 'error';
-    e_status.innerHTML = `Worker error: ${error}`;
+    e_status.innerText = `Worker error: ${error}`;
   };
   return worker;
 }
@@ -596,7 +595,7 @@ e_toggle_running.onclick = async function () {
     } catch (e) {
       e_toggle_running.innerHTML = 'Start';
       e_status.className = 'error';
-      e_status.innerHTML = `Error: ${format(e.message)}`;
+      e_status.innerText = `Error: ${format(e.message)}`;
       console.log(e.stack);
     }
   }
