@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Editor | Black Box</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="editor.css">
+    <script defer data-domain="blackbox.hackclub.com" src="https://plausible.io/js/script.js"></script>
+  </head>
+
+  <!--
+    AD CAPTANDUM VULGUS
+  -->
+
+  <body>
+    <main>
+      <div id="password_container" class="dn">
+        <form id="password_form">
+          <label for="password">&#x1f511;</label>
+          <input type="text" id="password" />
+          <input type="button" id="submit_password" value="&gt;" />
+        </form>
+        <a id="exit_password" class="red" href="/">&lt; Back</a>
+      </div>
+      <div id="editor_container" class="dn oz">
+        <div id="message_container" class="dn">
+          <div id="message_text_container">
+            <h2 id="message_heading">...</h2>
+            <h4 id="message_subheading">...</h4>
+            <div id="message_body"></div>
+          </div>
+          <div id="message_buttons_container">
+            <button id="confirm_message">...</button>
+            <button id="deny_message" class="dn">...</button>
+          </div>
+        </div>
+        <div id="editor_top_container">
+          <p>
+            <span class="h4"><a class="red" href="/">&lt;</a> Editor </span>
+            <span class="p">
+              <a id="q" class="yellow">(?)</a>
+              &middot;
+              <a id="reset" class="red">Reset</a>
+            </span>
+          </p>
+          <!-- <img src="/favicon.svg" width="32" /> -->
+          <p id="editor_top_right">
+            <span id="latin_phrase" class="muted">...</span> &middot; <a id="editor_version">v0.2.0</a> &middot; <a class="red" id="feedback">Feedback</a>
+          </p>
+        </div>
+        <div id="editor_bottom_container">
+          <div id="editor_left_container">
+            <div id="cm_container"></div>
+            <div id="docs_container">
+              <h2>API documentation</h2>
+              <h4 class="original">Scientia potentia est</h4>
+            </div>
+            <div id="buttons_container">
+              <button id="toggle_running">Start</button>
+              <button id="toggle_view">View docs</button>
+              <button id="change_color">Change color</button>
+              <button id="permalink">Permalink</button>
+              <button id="edit" class="dn">Edit</button>
+            </div>
+          </div>
+          <div id="editor_right_container">
+            <!-- <div id="gesture_container">
+              <p id="gesture">&#x1f50a;</p>
+            </div> -->
+            <div id="black_box_container">
+              <div id="canvas_container">
+                <canvas id="canvas"></canvas>
+              </div>
+              <div id="controls_container">
+                <button id="up" tabIndex="-1"></button>
+                <button id="down" tabIndex="-1"></button>
+                <button id="left" tabIndex="-1"></button>
+                <button id="right" tabIndex="-1"></button>
+                <button id="select" tabIndex="-1"></button>
+              </div>
+              <div id="info_container" class="boxed dn">
+                <p id="info" class="info">...</p>
+              </div>
+            </div>
+            <div id="status_container" class="boxed">
+              <p id="status">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="codemirror.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/victus@0.12.0/build/victus.min.js"></script>
+    <script src="https://unpkg.com/tone" crossorigin></script>
+    <script src="docs.js"></script>
+    <script src="messages.js" type="module"></script>
+    <script src="script.js" type="module"></script>
+    <!-- <script src="script.crushed.js"></script> -->
+  </body>
+
+</html>

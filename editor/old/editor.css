@@ -1,0 +1,422 @@
+main {
+  margin:0;
+  padding:0;
+  max-width:none;
+  display:flex;
+  justify-content:center;
+}
+
+a:hover {
+  cursor:pointer;
+}
+
+button {
+  margin:8px;
+  padding:0 10px;
+  height:30px;
+  background-color:#222;
+  border:2px solid #aaa;
+  filter:drop-shadow(0px 0px 5px #999);
+  color:#eee;
+}
+
+button:not([disabled]):hover {
+  background-color:#444;
+}
+
+button:not([disabled]):active {
+  background-color:#666;
+}
+
+button[disabled] {
+  opacity:0.5;
+}
+
+hr {
+  margin: 0.75rem 0 2.25rem 0;
+}
+
+#password_container, #editor_container {
+  display:flex;
+  height:100vh;
+}
+
+#password_container {
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:16px;
+  width:220px;
+}
+
+#password_form label {
+  display:block;
+  margin-bottom:8px;
+  font-size:24px;
+}
+
+#password, #submit_password {
+  outline:none;
+  background-color:#222;
+  border:2px solid #777;
+  filter:drop-shadow(0px 0px 10px #555);
+  color:#eee;
+  padding:6px;
+  height:32px;
+  color:#fff;
+  font-family:monospace;
+}
+
+#password.accepted {
+  border:2px solid #5dc91e !important;
+}
+
+#password.denied {
+  border:2px solid #e45649 !important;
+}
+
+#submit_password {
+  width:32px;
+}
+
+#password:hover, #submit_password:hover {
+  border:2px solid #999;
+}
+
+#password:focus, #submit_password:active {
+  border:2px solid #bbb;
+}
+
+#exit_password {
+  align-self:start;
+}
+
+#message_container {
+  position:absolute;
+  display:flex;
+  flex-direction:column;
+  top:12.5vh;
+  left:20vw;
+  width:60vw;
+  height:75vh;
+  z-index:2;
+  padding:20px 32px;
+  background-color:#111111;
+  background-image:url("https://www.transparenttextures.com/patterns/black-twill.png");
+  border:2px solid #444;
+  gap:16px;
+}
+
+#message_container.small {
+  top:30vh;
+  left:30vw;
+  width:40vw;
+  height:40vh;
+}
+
+#message_text_container {
+  overflow-y:scroll;
+  max-height:calc(100% - 30px - 16px);
+  border-bottom:1px solid #666;
+  box-shadow:0 8px 2px -5px #333;
+}
+
+#message_text_container p {
+  font-size:14px;
+  color:#ccc;
+}
+
+#message_text_container li {
+  margin-bottom:16px;
+}
+
+#message_buttons_container {
+  height:10vh;
+  display:flex;
+}
+
+#confirm_message, #deny_message {
+  margin:0;
+  width:fit-content;
+}
+
+#deny_message {
+  margin-left:8px
+}
+
+#editor_container {
+  flex-direction:column;
+}
+
+#editor_top_container, #editor_bottom_container {
+  display:flex;
+}
+
+#editor_top_container {
+  height:7.5vh;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #222;
+  padding:0 36px;
+}
+
+#editor_top_container p {
+  margin-bottom:0;
+  font-size:12px;
+}
+
+#editor_top_container p span.p {
+  position:relative;
+  top:-2px;
+}
+
+#latin_phrase {
+  text-transform:uppercase;
+}
+
+#editor_left_container, #editor_right_container {
+  width:50vw;
+  display:flex;
+  flex-direction:column;
+}
+
+#buttons_container, #status_container {
+  height:10vh;
+  display:flex;
+  align-items:center;
+  align-self:center;
+}
+
+#cm_container, #docs_container, #black_box_container {
+  border-right:1px solid #222;
+  border-bottom:1px solid #222;
+  height:82.5vh;
+}
+
+#docs_container {
+  display:none;
+  padding:1.5rem 36px 0 36px;
+  overflow:auto;
+}
+
+#docs_container h2, #message_container h2 {
+  font-size:22px;
+}
+
+#docs_container h4 {
+  text-transform:none;
+  margin-bottom:0;
+  display:inline-block;
+}
+
+#docs_container h4.original {
+  text-transform:uppercase;
+  margin-bottom:16px;
+  display:block;
+}
+
+#black_box_container {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+/* #gesture_container {
+  left:calc(50vw + 8px);
+  top:calc(7.5vh + 8px);
+} */
+
+/* #gesture_container p {
+  margin-bottom:0;
+} */
+
+#canvas_container, #controls_container {
+  display:var(--bb-display); /* set in /style.css */
+}
+
+#controls_container button {
+  padding:0
+}
+
+/* ignore some of the color changes from /style.css */
+#controls_container button:hover, #controls_container button:active {
+  background-color:#222;
+}
+
+#info_container {
+  position:absolute;
+  /* place at top of #status_container,
+  account for #info_container's height,
+  and add breathing room */
+  top:calc(82.5vh - 30px - 16px);
+}
+
+.boxed p {
+  margin-bottom:0;
+  padding:4px 10px;
+  font-size:14px;
+  background-color:#222;
+}
+
+.permalink {
+  margin-bottom:0;
+  display:inline-block;
+  margin-right:8px;
+}
+
+.permalink a {
+  font-size:14px;
+  text-decoration:none;
+}
+
+.field, .method, #docs_container h4 {
+  scroll-margin-top:18px;
+}
+
+.field, .method {
+  margin-bottom:0;
+  display:inline-block;
+}
+
+.field_description, .method_description {
+  color:#aaa;
+  font-size:14px;
+}
+
+.method_description b {
+  color:#ccc
+}
+
+.boxed p.info {
+  background-color:#72cff760;
+}
+
+.boxed p.success {
+  background-color:#a7ec1260;
+}
+
+.boxed p.warning, .highlight {
+  background-color:#ffee0060;
+}
+
+#status.error {
+  background-color:#ff341160;
+}
+
+.h4 {
+  text-transform:uppercase;
+  font-size:16px;
+  font-family:"Roboto Mono";
+  font-weight:100;
+}
+
+.mono {
+  font-family:monospace;
+}
+
+.cm-editor {
+  width:100%;
+  height:100%;
+}
+
+.cm-editor .cm-cursor {
+  border-left-color:#c7e916;
+}
+
+.ͼ2 .cm-gutters {
+  background-color:#222;
+  color:#eee;
+  border-right:1px solid #444;
+}
+
+.ͼ2 .cm-activeLine {
+  background-color:#222;
+}
+
+.ͼ2 .cm-activeLineGutter {
+  background-color:#444;
+}
+
+.ͼ2.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground {
+  background-color:black
+}
+
+.ͼ4 .cm-line ::selection, .ͼ4 .cm-line::selection {
+  background-color:#444444aa !important;
+}
+
+.ͼc { /* true or false */
+  color:#86b3f7;
+}
+
+.ͼd { /* number */
+  color:#c7e916;
+}
+
+.ͼe { /* string */
+  color:#e45649;
+}
+
+.ͼb { /* keyword e.g. return */
+  color:#dc6a9f;
+}
+
+.ͼi { /* type */
+  color:#c7e916;
+}
+
+.ͼg { /* function name */
+  color:#58aed3;
+}
+
+.ͼ5 { /* include */
+  color:#de9456;
+}
+
+.ͼm { /* comment */
+  color:#999;
+}
+
+#cm_container.cna .cm-line {
+  color:#aaa;
+}
+
+#cm_container.cna .ͼc {
+  color:#4973b3;
+}
+
+#cm_container.cna .ͼd {
+  color:#92a823;
+}
+
+#cm_container.cna .ͼe {
+  color:#ab372c;
+}
+
+#cm_container.cna .ͼb {
+  color:#ad4777;
+}
+
+#cm_container.cna .ͼi {
+  color:#92a823;
+}
+
+#cm_container.cna .ͼg {
+  color:#3682a3;
+}
+
+#cm_container.cna .ͼ5 {
+  color:#995f2e;
+}
+
+#cm_container.cna .ͼm {
+  color:#666;
+}
+
+/* ignore changes from /style.css */
+@media screen and (max-width:768px) {
+  #gesture_container, #controls_container {
+    display:var(--bb-display);
+  }
+}
