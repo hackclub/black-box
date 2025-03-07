@@ -266,3 +266,10 @@ uint32_t debug_print(const char* str, ...);
 Format and print the specified string to the debug console.\
 Returns the number of characters printed.\
 For information on the formatting accepted by `debug_print`, see [https://cplusplus.com/reference/cstdio/printf/](https://cplusplus.com/reference/cstdio/printf/).
+
+#### bb_rand
+```c
+uint16_t bb_rand(uint16_t min, uint16_t max);
+```
+
+Generate a random number between min and max (inclusive).

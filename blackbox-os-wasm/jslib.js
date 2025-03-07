@@ -70,6 +70,9 @@ mergeInto(LibraryManager.library, {
 
     globalThis.panic(str);
   },
+  hal_rand: function() {
+    return Math.trunc(Math.random() * 65536);
+  },
   plat_get_events: function(ptr) {
     let arr = new Uint8Array(Module.HEAP8.buffer, ptr, 32);
 

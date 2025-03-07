@@ -196,6 +196,26 @@ void bb_tone_off() {
   hal_tone_off();
 }
 
+/// Random
+
+uint16_t bb_rand(uint16_t min, uint16_t max) {
+  if (min > max) {
+    uint16_t temp = min;
+    min = max;
+    max = temp;
+  }
+
+  uint16_t range = max - min + 1;
+  if (range == 1) {
+    return min;
+  }
+  
+  uint32_t rand_val = hal_rand();
+  uint16_t scaled = ((uint32_t)rand_val * range) >> 16;
+
+  return min + scaled;
+}
+
 /// Debug
 
 uint32_t debug_print(const char* str, ...) {

@@ -47,6 +47,8 @@ typedef enum {
  */
 hal_button_state hal_button_get_state(hal_button button);
 
+uint16_t hal_rand();
+
 /// Sound
 
 /*

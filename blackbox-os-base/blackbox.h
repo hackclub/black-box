@@ -138,6 +138,13 @@ void bb_tone(uint16_t frequency);
  */
 void bb_tone_off();
 
+/// Misc
+
+/*
+ * Generate a random number between min and max (inclusive).
+ */
+uint16_t bb_rand(uint16_t min, uint16_t max);
+
 /// Debug
 
 /*
