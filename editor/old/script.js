@@ -29,28 +29,15 @@ let animation_frame;
 // this allows us to do instant color changes
 let _on_pixels = [];
 
-let code_before_example;
-
 let messages;
 let active_message;
 
-let old_button_state = {
-  up: false, 
-  down: false,
-  left: false,
-  right: false,
-  select: false,
-};
-
 const editor_view = document.querySelector('.cm-editor').querySelector('.cm-content').cmView.view;
 const e_q = document.getElementById('q');
-const e_example_tasks = document.getElementById('example_tasks');
-const e_example_puzzle = document.getElementById('example_puzzle');
-const e_example_gol = document.getElementById('example_gol');
+const e_reset = document.getElementById('reset');
 const e_latin_phrase = document.getElementById('latin_phrase');
 const e_editor_version = document.getElementById('editor_version');
 const e_feedback = document.getElementById('feedback');
-const e_reset = document.getElementById('reset');
 const e_password_container = document.getElementById('password_container');
 const e_password = document.getElementById('password');
 const e_submit_password = document.getElementById('submit_password');
@@ -72,13 +59,12 @@ const e_right = document.getElementById('right');
 const e_select = document.getElementById('select');
 const e_info_container = document.getElementById('info_container');
 const e_info = document.getElementById('info');
-const e_debug = document.getElementById('debug');
 const e_toggle_running = document.getElementById('toggle_running');
 const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
 const e_permalink = document.getElementById('permalink');
 const e_edit = document.getElementById('edit');
-const e_close_example = document.getElementById('close_example');
+const e_gesture_container = document.getElementById('gesture_container');
 const e_status = document.getElementById('status');
 
 const BYPASS_PASSWORD = true;
@@ -89,6 +75,33 @@ document.addEventListener('DOMContentLoaded', victus.setup({
   h: 160,
   color: '#222',
 }));
+
+/**
+ * Mock header contents.
+ */
+const blackbox_h = ``;
+
+/**
+ * Mock struct definitions.
+ * We need these in order to allow declarations of type `Pixel*`, `Matrix*`,
+ * `Slice*`, `Piezo*`, and `BlackBox*`.
+ */
+const blackbox_struct_definitions = `struct Pixel {
+  int value;
+}
+
+struct Matrix {
+  Pixel* pixels[64];
+}
+
+struct Slice {
+  Pixel** ptr;
+  int len;
+}
+
+struct BlackBox {
+  Matrix* matrix;
+}`;
 
 /**
  * Submit a password.
@@ -127,7 +140,7 @@ e_password.onkeydown = function (e) {
 e_submit_password.onclick = submit_password;
 
 window.onresize = e_message_text_container.onscroll = function () {
-  if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 3) {
+  if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight - 20) {
     e_confirm_message.disabled = false;
     e_deny_message.disabled = false;
   }
@@ -140,22 +153,22 @@ e_confirm_message.onclick = function () {
   // add a cookie if confirming the intro message
   // if (active_message === messages.soft_launch) {
   if (active_message === messages.launch) {
-    localStorage.setItem('unlocked', '1');
+    localStorage.setItem('unlocked_old', '1');
     try_show_changes();
   }
   // add a cookie if confirming the latest version message
   if (active_message.name.startsWith('v0')) {
-    localStorage.setItem('version', active_message.name);
+    localStorage.setItem('version_old', active_message.name);
   }
   // confirm edit
   if (active_message.name === 'confirm_edit') {
     // console.log('[main] user hit Edit - they want to edit the permalink!');
-    localStorage.setItem('doc', editor_view.state.doc.toString());
+    localStorage.setItem('doc_old', editor_view.state.doc.toString());
     window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
   }
   // confirm reset
   if (active_message.name === 'confirm_reset') {
-    localStorage.removeItem('doc');
+    localStorage.removeItem('doc_old');
     window.location.href = window.location.href.slice(0, window.location.href.indexOf('?'));
   }
 }
@@ -170,69 +183,30 @@ e_deny_message.onclick = function () {
 }
 
 e_q.onclick = function () {
-  active_message = messages.launch;
-  active_message.show();
-}
-
-/**
- * Load an example program.
- * @param {string} example
- */
-async function load_example (example) {
-  get_text(`/examples/${example}.c`).then(text => {
-    if (localStorage.getItem('code_before_example') === null) {
-      code_before_example = editor_view.state.doc.toString();
-      localStorage.setItem('code_before_example', code_before_example);
-    }
-    editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: text }});
-    e_permalink.className = 'dn';
-    e_close_example.className = '';
-  });
-}
-
-e_close_example.onclick = function () {
-  localStorage.removeItem('code_before_example');
-  editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: code_before_example }});
-  e_close_example.className = 'dn';
-  e_permalink.className = '';
-}
-
-e_example_tasks.onclick = async function () {
-  load_example('tasks');
-}
-
-e_example_puzzle.onclick = function () {
-  load_example('puzzle');
-}
-
-e_example_gol.onclick = function () {
-  load_example('gol');
+  // active_message = messages.soft_launch.show();
+  active_message = messages.launch.show();
 }
 
 e_reset.onclick = function () {
-  active_message = messages.confirm_reset;
-  active_message.show();
+  active_message = messages.confirm_reset.show();
 }
 
 function try_show_changes (force = false) {
   const V = e_editor_version.innerHTML;
   const messages_key = V.replaceAll('.', '_');
   if (force) {
-    active_message = messages[messages_key];
-    active_message.show();
+    active_message = messages[messages_key].show();
     return;
   }
-  if (localStorage.getItem('unlocked') === '1' && localStorage.getItem('version') !== messages_key) {
-    active_message = messages[messages_key];
-    active_message.show();
+  if (localStorage.getItem('unlocked_old') === '1' && localStorage.getItem('version_old') !== messages_key) {
+    active_message = messages[messages_key].show();
   }
 }
 
 e_editor_version.onclick = () => try_show_changes(true);
 
 e_feedback.onclick = function () {
-  active_message = messages.feedback;
-  active_message.show();
+  active_message = messages.feedback.show();
 }
 
 /**
@@ -277,19 +251,13 @@ function new_worker () {
     if (e.data.message === 'no_tone') {
       oscillator.stop();
     }
-    if (e.data.message === 'console_write') {
-      const p = document.createElement('p');
-      p.innerText = e.data.text;
-      if (e.data.panic) {
-        p.className = 'panic';
-      }
-      e_debug.appendChild(p);
-    }
   };
+  // TODO: this function doesn't work right
   worker.onerror = function (e) {
     let error = e.message;
     e_status.className = 'error';
-    e_status.innerText = `Worker error: ${error}`;
+    e_status.innerHTML = `Worker error: ${error}`;
+    running = false;
   };
   return worker;
 }
@@ -375,41 +343,29 @@ function no_tone () {
  * Check the state of the buttons.
  */
 async function check_buttons () {
-  // FIXME: this is better than last time but still super hacky...
-  // fix it at some point?
-
-  let new_button_state = {
-    up: (victus.keys.ArrowUp?.held) ?? false,
-    down: (victus.keys.ArrowDown?.held) ?? false,
-    left: (victus.keys.ArrowLeft?.held) ?? false,
-    right: (victus.keys.ArrowRight?.held) ?? false,
-    select: (victus.keys.x?.held) ?? false,
-  };
-
-  let button_elems = {
-    up: e_up,
-    down: e_down,
-    left: e_left,
-    right: e_right,
-    select: e_select,
+  // TODO: don't repeat yourself
+  if (victus.keys.ArrowUp?.press) {
+    e_up.className = 'active';
+    setTimeout(() => e_up.className = '', 125);
+    await send_message('up');
+  } else if (victus.keys.ArrowDown?.press) {
+    e_down.className = 'active';
+    setTimeout(() => e_down.className = '', 125);
+    await send_message('down');
+  } else if (victus.keys.ArrowLeft?.press) {
+    e_left.className = 'active';
+    setTimeout(() => e_left.className = '', 125);
+    await send_message('left');
+  } else if (victus.keys.ArrowRight?.press) {
+    e_right.className = 'active';
+    setTimeout(() => e_right.className = '', 125);
+    await send_message('right');
+  } else if (victus.keys.x?.press) {
+    e_select.className = 'active';
+    setTimeout(() => e_select.className = '', 125);
+    await send_message('select');
   }
-
-  for (const [button, val] of Object.entries(new_button_state)) {
-    if (old_button_state[button] == val) continue;
-    
-    // button state has changed since last time
-
-    if (val) {
-      button_elems[button].className = 'active';
-    } else {
-      button_elems[button].className = '';
-    }
-
-    send_message("button", { button: button, state: val });
-  }
-
-  old_button_state = new_button_state;
-
+  Object.keys(victus.keys).forEach(key => victus.keys[key].press = false);
   animation_frame = window.requestAnimationFrame(check_buttons);
 }
 
@@ -421,32 +377,18 @@ async function check_buttons () {
 function format (message) {
   // make any parts of the message surrounded by backticks monospace
   let formatted = message.replace(/`(.+?)`/g, '<span class="mono">$1</span>');
-  // chop the filename
-  formatted = formatted.replace(/\.\/intermediate_files\/[-A-Za-z0-9-_=]+\.c/g, 'user_code.c');
-  // trim to the line that contains "error:"
-  let lines = formatted.split('\n');
-  let error_line = lines.find(line => line.includes('error:'));
-  if (error_line !== undefined) {
-    formatted = error_line;
-  } else {
-    // if there is no line with "error:", just display the first line
-    formatted = lines[0];
+  // fix the thing that cparse does
+  // note to self: make sure cparse's `pos.file` stays empty, otherwise this regex
+  // will have to change
+  const cparse_message_start = formatted.match(/:(\d+):/);
+  if (cparse_message_start !== null) {
+    const cparse_line_number = Number(cparse_message_start[1]);
+    // correct for all the extra stuff we add to the code
+    const ln = cparse_line_number - blackbox_h.split('\n').length - blackbox_struct_definitions.split('\n').length - 2;
+    formatted = formatted.replace(cparse_message_start[0], '');
+    formatted = `${formatted} (line ${ln})`;
   }
   return formatted;
-}
-
-/**
- * Fetch the contents of a file as text.
- * @param {string} url
- * @returns {string}
- */
-async function get_text (url) {
-  const response = await fetch(url, { cache: 'no-cache' });
-  let text;
-  if (response.ok) {
-    text = await response.text();
-  }
-  return text;
 }
 
 /**
@@ -484,6 +426,27 @@ async function backend_post (route, body) {
 }
 
 /**
+ * Callback for `#gesture_container` (the button with a speaker emoji).
+ * Populate `oscillator`, display `#black_box_container` at full opacity,
+ * and play a chime.
+ */
+// e_gesture_container.onclick = function () {
+//   oscillator = new Tone.Oscillator(0, 'triangle').toDestination();
+//   oscillator.volume.value = -24;
+//   e_gesture_container.className = 'dn';
+//   e_black_box_container.classList.replace('oh', 'of');
+//   e_black_box_container.style.animation = '1s linear 0s fade-in';
+//   if (e_toggle_view.innerHTML === 'View docs') {
+//     e_toggle_running.disabled = false;
+//   }
+//   for (let i = 0; i < 3; i++) {
+//     setTimeout(() => {
+//       tone([440, 659, 880][i], 63);
+//     }, (i * 125) + 50);
+//   }
+// }
+
+/**
  * Callback for `#toggle_view`.
  * Switch between CodeMirror and the API documentation.
  */
@@ -508,7 +471,7 @@ e_toggle_view.onclick = function () {
  */
 e_change_color.onclick = function () {
   matrix_color = (matrix_color + 1) % 3;
-  localStorage.setItem('matrix_color', JSON.stringify(matrix_color));
+  localStorage.setItem('matrix_color_old', JSON.stringify(matrix_color));
   e_info_container.classList.remove('dn');
   e_info.innerHTML = `Changed color to ${['red', 'yellow', 'green'][matrix_color]}`;
   draw_to_canvas(_on_pixels);
@@ -531,8 +494,7 @@ e_permalink.onclick = async function () {
  * Display confirmation message.
  */
 e_edit.onclick = function () {
-  active_message = messages.confirm_edit;
-  active_message.show();
+  active_message = messages.confirm_edit.show();
 }
 
 /**
@@ -565,24 +527,29 @@ e_toggle_running.onclick = async function () {
     populate_oscillator();
     try {
       // 1. create worker
+      console.log('[main] time to start running!');
       console.log('[main] creating worker...');
       worker = new_worker();
       console.log('[main] finished creating worker');
-      // 2. initialize emulator
-      await send_message('initialize_emu');
-      // 3. compile the code
-      e_status.className = 'warning';
-      e_status.innerHTML = 'Status: Compiling...';
+      // 2. create emulator
+      await send_message('create_emu');
+      // 3. create AST
       await send_message(
-        'compile_code',
-        { code: editor_view.state.doc.toString() }
+        'create_ast',
+        { doc: blackbox_h + '\n\n' + blackbox_struct_definitions + '\n\n' + editor_view.state.doc.toString() }
       );
-      // 5. call main
+      // 4. run checks on the AST
+      await send_message('sanity_check');
+      // 5. convert the AST to JavaScript
+      await send_message('convert_ast');
+      // 6. eval each
+      await send_message('eval_ast');
+      // 7. replace the matrix with a deeply nested proxy
+      await send_message('create_matrix_proxy');
+      // 8. call main
       await send_message('main');
       // the main message returns immediately, so we can put these lines here again
-      console.log('[main] done invoking main');
-      // 6. update UI, start checking buttons
-      e_debug.innerHTML = '';
+      // 9. update UI, start checking buttons
       e_info_container.classList.remove('dn');
       e_info.innerHTML = 'Use arrow keys + X';
       e_toggle_running.innerHTML = 'Stop';
@@ -595,7 +562,7 @@ e_toggle_running.onclick = async function () {
     } catch (e) {
       e_toggle_running.innerHTML = 'Start';
       e_status.className = 'error';
-      e_status.innerText = `Error: ${format(e.message)}`;
+      e_status.innerHTML = `Error: ${format(e.message)}`;
       console.log(e.stack);
     }
   }
@@ -606,11 +573,7 @@ async function init () {
   const messages_js = await import('./messages.js');
   messages = messages_js.default;
   // cookie
-  unlocked = localStorage.getItem('unlocked') ?? '0';
-  if (localStorage.getItem('code_before_example') !== null) {
-    editor_view.dispatch({ changes: { from: 0, to: editor_view.state.doc.length, insert: localStorage.getItem('code_before_example') }});
-    localStorage.removeItem('code_before_example');
-  }
+  unlocked = localStorage.getItem('unlocked_old') ?? '0';
   // version check
   try_show_changes();
   // URL parameters
@@ -635,7 +598,7 @@ async function init () {
     e_edit.className = '';
   }
     // rest of the easy stuff
-  matrix_color = Number(localStorage.getItem('matrix_color') ?? '0');
+  matrix_color = Number(localStorage.getItem('matrix_color_old') ?? '0');
   blank_matrix();
   e_latin_phrase.innerHTML = latin_phrases[Math.floor(Math.random() * latin_phrases.length)];
   e_status.innerHTML = 'Status: Not running';

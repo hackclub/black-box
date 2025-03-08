@@ -71,13 +71,6 @@ function matchAllWithCapturingGroups (value, ex, ...groups) {
   return last_match.length > 0;
 }
 
-async function append_child (parent, child) {
-  return new Promise((resolve) => {
-    parent.appendChild(child);
-    resolve();
-  })
-}
-
 /**
  * A message that can be displayed in `#message_container`.
  */
@@ -104,7 +97,7 @@ class Message {
   /**
    * Show this message, and return it.
    */
-  async show () {
+  show () {
     // the easy part
     e_message_heading.innerHTML = this.heading;
     e_message_subheading.innerHTML = this.subheading;
@@ -130,7 +123,7 @@ class Message {
         .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
         .replace(/\*(.+?)\*/g, '<i>$1</i>')
         .replace(/`(.+?)`/g, `<span class="mono green">$1</span>`);
-      await append_child(e_message_body, p);
+      e_message_body.appendChild(p);
     }
     // the second easy part
     if (this.small === true) {
@@ -145,8 +138,8 @@ class Message {
     e_editor_bottom_container.classList.add('oh');
     e_editor_bottom_container.classList.add('in');
     // the third easy part
-    e_message_text_container.scrollTop = 0;
-    if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 3) {
+    e_message_text_container.scrollTo({ top: 0 });
+    if (e_message_text_container.scrollTop + e_message_text_container.clientHeight >= e_message_text_container.scrollHeight - 20) {
       e_confirm_message.disabled = false;
       e_deny_message.disabled = false;
     }
@@ -217,15 +210,13 @@ Your feedback will help me make the editor **the best it can be** ahead of Black
 
 const launch = new Message('launch',
 `## Black Box editor
-#### Official launch
+#### (Old version)
 
-**Welcome to the Black Box editor!**
+This is a snapshot of the Black Box editor as it was on **March 7, 2025**. This was added in order to maintain compatibility with submissions received before the release of version 0.3.0.
 
-This is what you'll be using to design and test your submission for Black Box. It won't be easy, but I know you can do it!\\
-*Read the docs*, *ask questions*, and above all, **try your best!**
+Using the <a href="https://blackbox.hackclub.com/editor">current version of the editor</a> is **strongly recommended.**
 
-If you'd like to **report a bug in the editor** that *prevents your code from working* the way it should, or you'd like to **request a feature** that the editor is missing, you can do so using the <b class="red">Feedback</b> link at the top of the page.\\
-I can't wait to see what you create with it &#x1f604;
+**Proceed at your own risk.**
 
 [Let's go!]`
 );
@@ -294,39 +285,6 @@ These bugs have been fixed:
 [Awesome!]`
 );
 
-const v0_3_0 = new Message('v0_3_0',
-`## What's new?
-#### Version 0.3.0
-
-These features are now available:
-
-<ul>
-  <li>
-    **Completely rewritten editor** &ndash; Now powered by WASM and a real C compiler, thanks to <a href="https://github.com/rivques" target="_blank">@rivques</a> and <a href="https://github.com/Saghetti0" target="_blank">@Walter Min</a>
-    <ul>
-      <li>Brand-new API &ndash; uses plain function calls instead of structs</li>
-      <li>Improved task system &ndash; intervals, timeouts, and more</li>
-      <li>The previous version of the editor is still available if you know where to look</li>
-    </ul>
-  </li>
-  <li>**Example programs** &ndash; Learn how to use the new API</li>
-</ul>
-
-These bugs have been fixed:
-
-<ul>
-  <li>Updated boolean color (<a href="https://github.com/hackclub/black-box/issues/5" target="_blank">#5</a>)</li>
-  <li>Updated colors when editor is disabled</li>
-</ul>
-
-**Note:** Because of the extent of the changes introduced in this version, your old code will no longer work.\\
-If you did not complete your submission before this version was released, **you will need to put in some work to make it work properly with the new API.**\\
-Be sure to *read the docs* and *view the example programs.*\\
-If you need help, ask in <a href="https://hackclub.slack.com/archives/C08APN1CKEJ" target="_blank">#black-box.</a>
-
-[Awesome!]`
-)
-
 export default {
   confirm_edit,
   confirm_reset,
@@ -336,5 +294,4 @@ export default {
   v0_1_0rc2,
   v0_1_0,
   v0_2_0,
-  v0_3_0,
 }

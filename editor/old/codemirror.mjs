@@ -6,22 +6,31 @@ import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightActiveLine, highlightActiveLineGutter, highlightSpecialChars, drawSelection, rectangularSelection, keymap, ViewPlugin } from '@codemirror/view';
 import { c } from '@codemirror/legacy-modes/mode/clike';
 
-const default_doc = `// Core definitions for black box
-#include "blackbox.h"
+const default_doc = `#include "blackbox.h"
 
-// An example task that blinks a single pixel
-void blink(task_handle self) {
-  // Toggle the pixel at (3, 3)
-  bb_matrix_toggle_pos(3, 3);
-}
+// VEXATA QUAESTIO
 
-// Your main code goes here!
-// Set up global variables, timers, events, etc.
-void setup() {
-  // COGITO ERGO SUM
-  
-  // Run \`blink\` every 500ms (every half second)
-  task_create_interval(blink, 500);
+#define BLACKBOX_TIMEOUT_1 1
+#define BLACKBOX_TIMEOUT_2 125
+
+BlackBox* blackbox;
+
+// These functions are called when the buttons are pressed
+void on_up() {}
+void on_down() {}
+void on_left() {}
+void on_right() {}
+void on_select() {}
+
+// These functions are called repeatedly
+void on_timeout_1() {}
+void on_timeout_2() {}
+
+// Your main loop goes here!
+void main() {
+  while (1) {
+    // COGITO ERGO SUM
+  }
 }`;
 
 let params = new URLSearchParams(window.location.search);
@@ -48,7 +57,7 @@ const extensions = [
   syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
   EditorView.updateListener.of(update => {
     if (update.docChanged && params.get('code') === null) {
-      localStorage.setItem('doc', update.state.doc.toString());
+      localStorage.setItem('doc_old', update.state.doc.toString());
     }
   }),
   EditorState.readOnly.of(params.get('code') !== null),
@@ -59,9 +68,9 @@ let doc;
 //   console.log('[cm] setting code based on URL parameter')
 //   doc = atob(decodeURIComponent(params.get('code')));
 // }
-if (localStorage.getItem('doc') !== null) {
+if (localStorage.getItem('doc_old') !== null) {
   console.log('[cm] setting code based on local storage')
-  doc = localStorage.getItem('doc');
+  doc = localStorage.getItem('doc_old');
 } else {
   console.log('[cm] setting code to default');
   doc = default_doc;

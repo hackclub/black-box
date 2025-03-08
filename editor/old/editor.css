@@ -10,10 +10,6 @@ a:hover {
   cursor:pointer;
 }
 
-a.disabled:hover {
-  cursor:default;
-}
-
 button {
   margin:8px;
   padding:0 10px;
@@ -38,12 +34,6 @@ button[disabled] {
 
 hr {
   margin: 0.75rem 0 2.25rem 0;
-}
-
-pre {
-  margin-bottom:8px;
-  color:antiquewhite;
-  white-space:pre-wrap;
 }
 
 #password_container, #editor_container {
@@ -140,10 +130,6 @@ pre {
   margin-bottom:16px;
 }
 
-#message_text_container ul li ul li {
-  margin-bottom:0;
-}
-
 #message_buttons_container {
   height:10vh;
   display:flex;
@@ -219,6 +205,7 @@ pre {
 
 #docs_container h4 {
   text-transform:none;
+  margin-bottom:0;
   display:inline-block;
 }
 
@@ -234,6 +221,15 @@ pre {
   justify-content:center;
   flex-direction:column;
 }
+
+/* #gesture_container {
+  left:calc(50vw + 8px);
+  top:calc(7.5vh + 8px);
+} */
+
+/* #gesture_container p {
+  margin-bottom:0;
+} */
 
 #canvas_container, #controls_container {
   display:var(--bb-display); /* set in /style.css */
@@ -256,33 +252,6 @@ pre {
   top:calc(82.5vh - 30px - 16px);
 }
 
-#debug_container {
-  position:absolute;
-  bottom:calc(82.5vh - 100px - 36px);
-  left:calc(50vw - 150px - 36px);
-  font-size:12px;
-}
-
-#debug_container p {
-  margin-bottom:8px;
-}
-
-#debug {
-  width:150px;
-  height:100px;
-  background-color:#111111;
-  background-image:url("https://www.transparenttextures.com/patterns/black-twill.png");
-  border:2px solid #444;
-  font-family:monospace;
-  overflow-y:scroll;
-  padding-left:4px;
-}
-
-#debug p {
-  margin-bottom:0;
-  color:#ccc;
-}
-
 .boxed p {
   margin-bottom:0;
   padding:4px 10px;
@@ -301,22 +270,21 @@ pre {
   text-decoration:none;
 }
 
-.item, #docs_container h4 {
+.field, .method, #docs_container h4 {
   scroll-margin-top:18px;
 }
 
-.item {
+.field, .method {
   margin-bottom:0;
   display:inline-block;
 }
 
-.item_description {
+.field_description, .method_description {
   color:#aaa;
   font-size:14px;
-  margin-bottom:8px
 }
 
-.item_description b {
+.method_description b {
   color:#ccc
 }
 
@@ -345,10 +313,6 @@ pre {
 
 .mono {
   font-family:monospace;
-}
-
-.panic {
-  color:#e45649;
 }
 
 .cm-editor {

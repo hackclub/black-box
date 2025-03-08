@@ -1,0 +1,17 @@
+{
+  "name": "black-box",
+  "version": "1.0.0",
+  "description": "**[Website](https://blackbox.hackclub.com)** / **[Submit](https://forms.hackclub.com/t/p5KXk1YQT3us)** / **Gallery** (coming soon)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "minimist": "^1.2.8",
+    "morgan": "^1.10.0"
+  }
+}

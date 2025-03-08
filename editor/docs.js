@@ -4,10 +4,11 @@
 */
 
 // what in god's name
-const EXP_CLASS_DEFINITIONS = /^(\/\*\*)\n \* ([A-Z][A-Za-z0-9 .,'*_`\n]+?)\n (\*\/)\nclass (Pixel|Matrix|Slice|Piezo|BlackBox) {(\n  )(constructor \(.*?\) {(\n    )\1(\n     ).+?\5})(\5(.+?))?\n}/gms;
-const EXP_CONSTRUCTOR_FIELDS = /(\/\*\*)(\n     )\* (.+?)\2\* @type {(.+?)}\2(\* @private\2)?\*\/(.*?)\n    this\.(.+?) = .+?;/gms;
-const EXP_METHODS = /\/\*\*(\n   )(\* )(.+?)(\n   )(\2@.+?\4)?\*\/\n  (.+?) \(/gms;
-const EXP_METHOD_TYPES = /@(param {(.+?)} (.+))|(returns {(.+?)})/gm;
+// const EXP_CLASS_DEFINITIONS = /^(\/\*\*)\n \* ([A-Z][A-Za-z0-9 .,'*_`\n]+?)\n (\*\/)\nclass (Pixel|Matrix|Slice|Piezo|BlackBox) {(\n  )(constructor \(.*?\) {(\n    )\1(\n     ).+?\5})(\5(.+?))?\n}/gms;
+// const EXP_CONSTRUCTOR_FIELDS = /(\/\*\*)(\n     )\* (.+?)\2\* @type {(.+?)}\2(\* @private\2)?\*\/(.*?)\n    this\.(.+?) = .+?;/gms;
+// const EXP_METHODS = /\/\*\*(\n   )(\* )(.+?)(\n   )(\2@.+?\4)?\*\/\n  (.+?) \(/gms;
+// const EXP_METHOD_TYPES = /@(param {(.+?)} (.+))|(returns {(.+?)})/gm;
+const EXP_MARKDOWN_ELEMENTS = /^## (\w+)|^### (\w+)|^#### (\w+)|```c\n(.+?)\n```|(^[A-Za-z0-9,. ()`'_\[\]:\/-]+)/gms;
 
 let last_match;
 
@@ -84,6 +85,23 @@ async function get_text(url) {
 }
 
 /**
+ * Create a permalink to an item and append it to `#docs_container`.
+ * @param {string} item
+ * @param {string} accent_color
+ */
+function create_permalink (item, accent_color) {
+  const e_permalink = document.createElement('p');
+  e_permalink.className = 'permalink';
+  const e_permalink_a = document.createElement('a');
+  e_permalink_a.className = accent_color;
+  e_permalink_a.href = `#${item}`;
+  e_permalink_a.innerHTML = '#';
+  e_permalink_a.onclick = e => highlight(e.target.hash.slice(1));
+  e_permalink.appendChild(e_permalink_a);
+  e_docs_container.appendChild(e_permalink);
+}
+
+/**
  * Generate documentation for the Black Box API and add it to the editor page.
  * @param {string} text
  */
@@ -91,169 +109,74 @@ function generate_docs (text) {
   console.log('[docs] generating docs...');
   matchAllWithCapturingGroups(
     text,
-    EXP_CLASS_DEFINITIONS,
-    '_',
-    'description',
-    '_',
-    'name',
-    '_',
-    'constructor',
-    '_', '_', '_',
-    'methods',
+    EXP_MARKDOWN_ELEMENTS,
+    'h2',
+    'h3',
+    'h4',
+    'code',
+    'p'
   );
-  let i = 0;
-  for (const class_definition of last_match) {
-    const accent_color = ['red', 'yellow', 'green'][i % 3];
-    const { description, name, constructor, methods } = class_definition;
-    // container
-    const e_class_container = document.createElement('div');
-    e_class_container.setAttribute('id', `${name.toLowerCase()}_docs_container`);
-    // name
-    const e_permalink = document.createElement('p');
-    e_permalink.className = 'permalink';
-    const e_permalink_a = document.createElement('a');
-    e_permalink_a.className = accent_color;
-    e_permalink_a.href = `#class_${name.toLowerCase()}`;
-    e_permalink_a.innerHTML = '#';
-    e_permalink_a.onclick = e => highlight(e.target.hash.slice(1));
-    e_permalink.appendChild(e_permalink_a);
-    e_class_container.appendChild(e_permalink);
-    const e_name = document.createElement('h4');
-    e_name.className = accent_color;
-    e_name.setAttribute('id', `class_${name.toLowerCase()}`);
-    e_name.innerHTML = name;
-    e_class_container.appendChild(e_name);
-    // description
-    const e_description = document.createElement('p');
-    e_description.innerHTML = description
-      .split('\n * ')
-      .join(' ')
-      .replaceAll('. ', '.<br>')
-      .replace(/`(.+?)`/g, `<span class="mono ${accent_color}">$1</span>`);
-    e_class_container.appendChild(e_description);
-    // constructor
-    matchAllWithCapturingGroups(
-      constructor,
-      EXP_CONSTRUCTOR_FIELDS,
-      '_', '_',
-      'field_description',
-      'field_type',
-      'private',
-      '_',
-      'field_name'
-    );
-    last_match = last_match.filter(match => match.private === '');
-    if (last_match.length !== 0) {
-      const e_fields = document.createElement('h5');
-      e_fields.className = accent_color;
-      e_fields.innerHTML = 'Fields';
-      e_class_container.appendChild(e_fields);
-    }
-    for (const field of last_match) {
-      const { field_description, field_type, field_name } = field;
-      // field (name and type)
-      const e_permalink = document.createElement('p');
-      e_permalink.className = 'permalink';
-      const e_permalink_a = document.createElement('a');
-      e_permalink_a.className = accent_color;
-      e_permalink_a.href = `#field_${name.toLowerCase()}_${field_name}`;
-      e_permalink_a.innerHTML = '#';
-      e_permalink_a.onclick = e => highlight(e.target.hash.slice(1));
-      e_permalink.appendChild(e_permalink_a);
-      e_class_container.appendChild(e_permalink);
-      const e_field = document.createElement('p');
-      e_field.className = 'field';
-      e_field.setAttribute('id', `field_${name.toLowerCase()}_${field_name}`);
-      e_field.innerHTML = `${field_name}: <span class="mono ${accent_color}">${field_type}</span>`;
-      e_class_container.appendChild(e_field);
-      // field description
-      const e_field_description = document.createElement('p');
-      e_field_description.className = 'field_description';
-      e_field_description.innerHTML = field_description
-        .split('\n     * ')
-        .join(' ')
-        .replaceAll('. ', '.<br>')
-        .replace(/`(.+?)`/g, `<span class="mono ${accent_color}">$1</span>`);
-      e_class_container.appendChild(e_field_description);
-    }
-    // methods
-    matchAllWithCapturingGroups(
-      methods,
-      EXP_METHODS,
-      '_', '_',
-      'method_description',
-      '_',
-      'method_types',
-      'method_name'
-    );
-    if (last_match.length !== 0) {
-      const e_methods = document.createElement('h5');
-      e_methods.className = accent_color;
-      e_methods.innerHTML = 'Methods';
-      e_class_container.appendChild(e_methods);
-    }
-    for (const method of last_match) {
-      const { method_description, method_types, method_name } = method;
-      // method types
-      matchAllWithCapturingGroups(
-        method_types,
-        EXP_METHOD_TYPES,
-        '_',
-        'param_type',
-        'param_name',
-        '_',
-        'return_type'
-      );
-      const params = last_match
-        .filter(match => match.param_type !== '' && match.param_name !== '')
-        .map(match => `${match.param_name}: <span class="mono ${accent_color}">${match.param_type}</span>`);
-      const return_type = last_match
-        .find(match => match.return_type !== '')
-        ?.return_type;
-      // method (name, params and return type)
-      const e_permalink = document.createElement('p');
-      e_permalink.className = 'permalink';
-      const e_permalink_a = document.createElement('a');
-      e_permalink_a.className = accent_color;
-      e_permalink_a.href = `#method_${name.toLowerCase()}_${method_name.replaceAll(' ', '_')}`;
-      e_permalink_a.innerHTML = '#';
-      e_permalink_a.onclick = e => highlight(e.target.hash.slice(1));
-      e_permalink.appendChild(e_permalink_a);
-      e_class_container.appendChild(e_permalink);
-      const e_method = document.createElement('p');
-      e_method.className = 'method';
-      e_method.setAttribute('id', `method_${name.toLowerCase()}_${method_name.replaceAll(' ', '_')}`);
-      if (return_type === undefined) {
-        e_method.innerHTML = `${method_name}(${params.join(', ')})`;
-      } else {
-        e_method.innerHTML = `${method_name}(${params.join(', ')}): <span class="mono ${accent_color}">${return_type}</span>`;
+  let h2_count = 0;
+  let accent_color;
+  let item;
+  for (const markdown_element of last_match) {
+    const { h2, h3, h4, code, p } = markdown_element;
+    if (h2) {
+      if (h2_count > 0) {
+        const e_hr = document.createElement('hr');
+        e_docs_container.appendChild(e_hr);
       }
-      e_class_container.appendChild(e_method);
-      // method description
-      const e_method_description = document.createElement('p');
-      e_method_description.className = 'method_description';
-      e_method_description.innerHTML = method_description
-        .split('\n   * ')
-        .join(' ')
-        .replaceAll('. ', '.<br>')
+      accent_color = ['red', 'yellow', 'green'][h2_count++ % 3];
+      item = `docs_${h2.toLowerCase()}`;
+      create_permalink(item, accent_color);
+      const e_section_name = document.createElement('h4');
+      e_section_name.className = accent_color;
+      e_section_name.setAttribute('id', item);
+      e_section_name.innerHTML = h2;
+      e_docs_container.appendChild(e_section_name);
+    }
+    if (h3) {
+      item = `docs_${h3.toLowerCase()}`;
+      // create_permalink(item, accent_color);
+      const e_subsection_name = document.createElement('h5');
+      e_subsection_name.className = accent_color;
+      e_subsection_name.setAttribute('id', item);
+      e_subsection_name.innerHTML = h3;
+      e_docs_container.appendChild(e_subsection_name);
+    }
+    if (h4) {
+      item = `docs_${h4.toLowerCase()}`;
+      create_permalink(item, accent_color);
+      const e_item_name = document.createElement('p');
+      e_item_name.className = 'item';
+      e_item_name.setAttribute('id', item);
+      e_item_name.innerHTML = h4;
+      e_docs_container.appendChild(e_item_name);
+    }
+    if (code) {
+      // TODO: better coloring than just antiquewhite
+      const e_pre = document.createElement('pre');
+      e_pre.innerHTML = code;
+      e_docs_container.appendChild(e_pre);
+    }
+    if (p) {
+      const e_item_description = document.createElement('p');
+      e_item_description.className = 'item_description';
+      e_item_description.innerHTML = p
         .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
         .replace(/\*(.+?)\*/g, '<i>$1</i>')
-        .replace(/`(.+?)`/g, `<span class="mono ${accent_color}">$1</span>`);
-      e_class_container.appendChild(e_method_description);
+        .replace(/`(.+?)`/g, `<span class="mono ${accent_color}">$1</span>`)
+        .replace(/\[(.+?)\]\((.+?)\)/g, `<a href="$1" target="_blank">$2</a>`);
+      e_docs_container.appendChild(e_item_description);
     }
-    // close
-    e_class_container.appendChild(document.createElement('hr'));
-    e_docs_container.appendChild(e_class_container);
-    i++;
   }
+  // close
+  const e_hr = document.createElement('hr');
+  e_docs_container.appendChild(e_hr);
   console.log('[docs] finished generating docs');
   // hash
   if (window.location.hash === '') { return; }
-  if (
-    window.location.hash.startsWith('#class') ||
-    window.location.hash.startsWith('#field') ||
-    window.location.hash.startsWith('#method')
-  ) {
+  if (window.location.hash.startsWith('#docs')) {
     console.log(`[docs] highlighting ${window.location.hash}`);
     e_docs_container.style.display = 'block';
     e_cm_container.style.display = 'none';
@@ -287,5 +210,5 @@ function highlight (id) {
   e.classList.add('highlight');
 }
 
-get_text('./worker.js').then(generate_docs);
+get_text('/docs/api.md').then(generate_docs);
 
