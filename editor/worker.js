@@ -238,6 +238,8 @@ async function button(data) {
     return;
   }
 
+  buttonState[data.button] = data.state;
+
   const map = {
     "up_press": 0,
     "down_press": 1,

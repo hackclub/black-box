@@ -36,18 +36,17 @@ mergeInto(LibraryManager.library, {
     }
   },
   hal_button_get_state: function(button){
-    //console.log(`[jslib] Button ${button} state requested`);
     switch (button) {
       case 0:
-        return buttonState["up"] ? 1 : 0;
+        return globalThis.buttonState["up"] ? 1 : 0;
       case 1:
-        return buttonState["down"] ? 1 : 0;
+        return globalThis.buttonState["down"] ? 1 : 0;
       case 2:
-        return buttonState["left"] ? 1 : 0;
+        return globalThis.buttonState["left"] ? 1 : 0;
       case 3:
-        return buttonState["right"] ? 1 : 0;
+        return globalThis.buttonState["right"] ? 1 : 0;
       case 4:
-        return buttonState["select"] ? 1 : 0;
+        return globalThis.buttonState["select"] ? 1 : 0;
       default:
         return 0;
     }
