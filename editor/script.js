@@ -127,7 +127,7 @@ e_password.onkeydown = function (e) {
 e_submit_password.onclick = submit_password;
 
 window.onresize = e_message_text_container.onscroll = function () {
-  if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 1) {
+  if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 3) {
     e_confirm_message.disabled = false;
     e_deny_message.disabled = false;
   }

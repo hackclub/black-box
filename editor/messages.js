@@ -146,7 +146,7 @@ class Message {
     e_editor_bottom_container.classList.add('in');
     // the third easy part
     e_message_text_container.scrollTop = 0;
-    if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 1) {
+    if (e_message_text_container.scrollHeight - e_message_text_container.scrollTop - e_message_text_container.clientHeight < 3) {
       e_confirm_message.disabled = false;
       e_deny_message.disabled = false;
     }
