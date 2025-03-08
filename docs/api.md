@@ -70,6 +70,10 @@ Turn all LEDs in the matrix off.
 
 ## Slices
 
+A slice is a collection of pixels on the matrix from an index `start` to an index `end`, both inclusive.\
+An index of `0` represents the top left corner of the matrix.\
+Higher indices move through the matrix left-to-right, top-to-bottom.
+
 ### Methods
 
 #### bb_slice_all_on
@@ -77,27 +81,21 @@ Turn all LEDs in the matrix off.
 void bb_slice_all_on(uint8_t start, uint8_t end);
 ```
 
-Turn on all of the pixels in the matrix from index `start` to index `end`, both inclusive.\
-`0` represents the top left corner of the matrix.\
-Higher indices move through the matrix left-to-right, top-to-bottom.
+Turn on all of the pixels in the matrix from index `start` to index `end`.
 
 #### bb_slice_all_off
 ```c
 void bb_slice_all_off(uint8_t start, uint8_t end);
 ```
 
-Turn off all of the pixels in the matrix from index `start` to index `end`, both inclusive.\
-`0` represents the top left corner of the matrix.\
-Higher indices move through the matrix left-to-right, top-to-bottom.
+Turn off all of the pixels in the matrix from index `start` to index `end`.
 
 #### bb_slice_set_int
 ```c
 void bb_slice_set_int(uint8_t start, uint8_t end, uint32_t x);
 ```
 
-Set the pixels in the matrix from index `start` to index `end`, both inclusive, according to the bits of `x`.
-`0` represents the top left corner of the matrix.\
-Higher indices move through the matrix left-to-right, top-to-bottom.
+Set the pixels in the matrix from index `start` to index `end` according to the bits of `x`.
 
 ## Piezo
 
