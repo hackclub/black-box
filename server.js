@@ -72,7 +72,8 @@ app.post('/compile', async (req, res) => {
                 "-s WASM=1 " +
                 "-s MODULARIZE=1 " +
                 "-s EXPORT_ES6=1 " +
-                `-s EXPORTED_FUNCTIONS="['_plat_init','_plat_tick']"`
+                `-s EXPORTED_FUNCTIONS="['_plat_init','_plat_tick']" ` +
+                "-Werror=incompatible-function-pointer-types-strict"
             )
         } catch (err){
             console.log(err);
