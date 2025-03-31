@@ -1,7 +1,7 @@
 {
   "name": "black-box",
   "version": "1.0.0",
-  "description": "**[Website](https://blackbox.hackclub.com)** / **[Submit](https://forms.hackclub.com/t/p5KXk1YQT3us)** / **Gallery** (coming soon)",
+  "description": "**[Website](https://blackbox.hackclub.com)** / **Gallery** (coming soon)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

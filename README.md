@@ -1,6 +1,6 @@
 # Black Box
 
-**[Website](https://blackbox.hackclub.com)** / **[Submit](https://forms.hackclub.com/t/p5KXk1YQT3us)** / **Gallery** (coming soon)
+**[Website](https://blackbox.hackclub.com)** / **Gallery** (coming soon)
 
 <img src="https://github.com/hackclub/black-box/raw/main/favicon.svg" width="64" />
 
