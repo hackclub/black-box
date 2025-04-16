@@ -16,7 +16,7 @@
 /*
  * Get the number of milliseconds since the application has started. 
  */
-time_stamp millis();
+time_stamp bb_millis();
 
 /// Task management/event loop
 

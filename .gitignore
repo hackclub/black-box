@@ -3,3 +3,4 @@ codemirror.bundle.js
 node_modules
 black-box.code-workspace
 intermediate_files/
+arduino-build/*

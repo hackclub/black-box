@@ -40,7 +40,10 @@ function generateCodeId(code){
 // the fun part: compilation
 app.post('/compile', async (req, res) => {
     const data = req.body;
-    const code = data.code;
+    const rawCode = data.code;
+    // redefine millis to avoid conflict w/ arduino api
+    const code = "#define millis bb_millis\n" + rawCode + "\n#undef millis\n";
+
     const codeId = generateCodeId(code);
     console.log(`Received code with id ${codeId}`);
     if (code.length > 1000000){
