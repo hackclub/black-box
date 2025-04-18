@@ -74,6 +74,7 @@ const e_info_container = document.getElementById('info_container');
 const e_info = document.getElementById('info');
 const e_debug = document.getElementById('debug');
 const e_toggle_running = document.getElementById('toggle_running');
+const e_build_uf2 = document.getElementById('build_uf2');
 const e_toggle_view = document.getElementById('toggle_view');
 const e_change_color = document.getElementById('change_color');
 const e_permalink = document.getElementById('permalink');
@@ -599,6 +600,31 @@ e_toggle_running.onclick = async function () {
       console.log(e.stack);
     }
   }
+}
+
+e_build_uf2.onclick = async function () {
+  const code = editor_view.state.doc.toString();
+  console.log('[main] building uf2...');
+  // grab the code and send it to the compiler
+  const response = await fetch("/compile", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, compileUF2: true }),
+  });
+  const { error, codeId } = await response.json();
+  if (error) {
+    console.log(error);
+    e_status.className = 'error';
+    e_status.innerText = `Error: ${format(error)}`;
+    return;
+  }
+  const uf2Url = "/intermediate_files/" + codeId + "/blackbox-os-arduino.ino.uf2";
+  const a = document.createElement('a');
+  a.href = uf2Url;
+  a.download = "blackbox-os-arduino.ino.uf2";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 async function init () {

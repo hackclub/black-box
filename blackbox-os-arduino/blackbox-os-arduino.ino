@@ -1,15 +1,16 @@
 #include <cstdint>
 #include "hardware_defs.h"
-
+#include <string.h>
 namespace blackbox{
     extern "C" {
         #include "executor_private.h"
     }
 }
+
 namespace user {
     extern "C" {
         #include "user.h"
-#include <string.h>
+        #include USER_CODE_LIB
     }
 }
 namespace hal {
