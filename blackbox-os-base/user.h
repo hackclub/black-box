@@ -5,6 +5,6 @@
 #ifndef USER_H
 #define USER_H
 
-void setup();
+void user_setup();
 
 #endif

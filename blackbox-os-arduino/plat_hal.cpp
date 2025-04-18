@@ -15,9 +15,7 @@ uint32_t hal_millis(){
 }
 
 /// LED Matrix
-
-// an array to hold the current state of the matrix
-volatile uint8_t ardu_matrix_state[8];
+uint8_t hal_matrix_state[8] = {0};
 
 /*
  * Set the state of the LED matrix using an array. Each byte in the array
@@ -26,7 +24,11 @@ volatile uint8_t ardu_matrix_state[8];
  */
 void hal_matrix_set_arr(uint8_t arr[8]){
     for (int i = 0; i < 8; i++) {
-        ardu_matrix_state[i] = arr[i];
+        hal_matrix_state[i] = arr[i];
+        // write to the LED matrix
+        rp2040.fifo.push(
+            (i << 8) | arr[i]
+        );
     }
 }
 
@@ -35,7 +37,7 @@ void hal_matrix_set_arr(uint8_t arr[8]){
  */
 void hal_matrix_get_arr(uint8_t out_arr[8]){
     for (int i = 0; i < 8; i++) {
-        out_arr[i] = ardu_matrix_state[i];
+        out_arr[i] = hal_matrix_state[i];
     }
 }
 
