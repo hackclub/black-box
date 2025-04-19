@@ -1,4 +1,5 @@
 const express = require('express');
+const {rateLimit} = require('express-rate-limit');
 const morgan = require('morgan');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec)
@@ -37,8 +38,15 @@ function generateCodeId(code){
     return crypto.createHash('sha256').update(code).digest('base64url');
 }
 
+const limiter = rateLimit({
+    windowMs: 8000, // 8 seconds
+    max: 3, // limit each IP to 3 requests per windowMs
+    message: {error: "Too many requests, please don't spam compile."},
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 // the fun part: compilation
-app.post('/compile', async (req, res) => {
+app.post('/compile', limiter, async (req, res) => {
     const data = req.body;
     const rawCode = data.code;
     // redefine millis and setup to avoid conflict w/ arduino api
@@ -107,6 +115,7 @@ app.post('/compile', async (req, res) => {
                     "-s WASM=1 " +
                     "-s MODULARIZE=1 " +
                     "-s EXPORT_ES6=1 " +
+                    "-sEXPORTED_RUNTIME_METHODS=HEAP8 " + // now needed for emscripten 4.0.7 (:
                     `-s EXPORTED_FUNCTIONS="['_plat_init','_plat_tick']" ` +
                     "-Werror=incompatible-function-pointer-types-strict"
                 )

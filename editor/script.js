@@ -621,7 +621,7 @@ e_build_uf2.onclick = async function () {
   const uf2Url = "/intermediate_files/" + codeId + "/blackbox-os-arduino.ino.uf2";
   const a = document.createElement('a');
   a.href = uf2Url;
-  a.download = "blackbox-os-arduino.ino.uf2";
+  a.download = "blackbox-project.uf2";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

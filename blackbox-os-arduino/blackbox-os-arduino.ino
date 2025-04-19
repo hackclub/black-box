@@ -27,16 +27,23 @@ right now, only the first 10 event counters are in use:
 up_press, down_press, left_press, right_press, select_press, up_release, down_release, left_release, right_release, select_release
 */
 volatile uint8_t events[32];
-
+volatile uint32_t button_debounce_times[5] = {0, 0, 0, 0, 0};
 template <uint8_t ButtonIndex>
 void ISR_ButtonEvent() {
     static_assert(ButtonIndex < 5, "There should be no more than 5 buttons.");
-    debug_log("Button %u pressed", ButtonIndex);
-    // TODO: debounce?
-    if (digitalRead(BUTTON_PIN_START + ButtonIndex) == HIGH) {
+    // debounce the button
+    uint32_t now = millis();
+    if (now - button_debounce_times[ButtonIndex] < DEBOUNCE_DELAY) {
+        return;
+    }
+    button_debounce_times[ButtonIndex] = now;
+    // check if the button is pressed or released
+    if (digitalRead(BUTTON_PIN(ButtonIndex)) == HIGH) {
         events[ButtonIndex + 5]++;
+        debug_log("Button %u released, that event is now %u", ButtonIndex, events[ButtonIndex + 5]);
     } else {
         events[ButtonIndex]++;
+        debug_log("Button %u pressed, that event is now %u", ButtonIndex, events[ButtonIndex]);
     }
 
     // run the event loop again in case smth was waiting for a button
@@ -47,8 +54,8 @@ void ISR_ButtonEvent() {
 // the ISR needs to be a template function
 // there's probably a better way to do this but this'll work for now
 #define SETUP_BUTTON_PIN(i) \
-pinMode(BUTTON_PIN_START + (i), INPUT_PULLUP); \
-attachInterrupt(digitalPinToInterrupt(BUTTON_PIN_START + (i)), ISR_ButtonEvent<(i)>, CHANGE);
+pinMode(BUTTON_PIN(i), INPUT_PULLUP); \
+attachInterrupt(digitalPinToInterrupt(BUTTON_PIN(i)), ISR_ButtonEvent<(i)>, CHANGE);
 
 void setup(){
     Serial.begin(115200);
@@ -90,10 +97,13 @@ void loop(){
     return;
   }
   uint32_t nextTimestamp = plat_tick(millis());
+  
+  debug_log("next timestamp is %x, in %u ms", nextTimestamp, nextTimestamp - millis());
 
   // no timers need the event loop to be reticked
 
-  if (nextTimestamp == 0xFFFFFFFF) {
+  if (nextTimestamp == 0xFFFFFFFFUL) {
+    debug_log("no timers need the event loop to be reticked, waiting for interrupts...");
     ticking = false;
     return;
   }
@@ -101,7 +111,7 @@ void loop(){
   uint32_t now = millis();
   uint32_t delta = nextTimestamp - now;
 
-  if (delta <= 0) delta = 0;
+  if (nextTimestamp <= now) delta = 0;
 
   delay(delta);
 }
@@ -114,12 +124,12 @@ void setup1() {
     // matrix pins
     // PERF: could reimplement this with PIO for best speed
     for (int i = 0; i < 8; i++) {
-        pinMode(MATRIX_COL_PIN_START + i, OUTPUT);
-        digitalWrite(MATRIX_COL_PIN_START + i, LOW);
+        pinMode(MATRIX_COL_PIN(i), OUTPUT);
+        digitalWrite(MATRIX_COL_PIN(i), LOW);
     }
     for (int i = 0; i < 8; i++) {
-        pinMode(MATRIX_ROW_PIN_START + i, OUTPUT);
-        digitalWrite(MATRIX_ROW_PIN_START + i, LOW);
+        pinMode(MATRIX_ROW_PIN(i), OUTPUT);
+        digitalWrite(MATRIX_ROW_PIN(i), LOW);
     }
 }
 
@@ -145,14 +155,14 @@ void loop1() {
         for (int j = 0; j < 8; j++) {
             if (row_val & (1 << (7 - j))) {
                 // the display is common anode, so LOW is on and HIGH is off
-                digitalWrite(MATRIX_COL_PIN_START + j, LOW);
+                digitalWrite(MATRIX_COL_PIN(j), LOW);
             } else {
-                digitalWrite(MATRIX_COL_PIN_START + j, HIGH);
+                digitalWrite(MATRIX_COL_PIN(j), HIGH);
             }
         }
-        digitalWrite(MATRIX_ROW_PIN_START + i, HIGH);
+        digitalWrite(MATRIX_ROW_PIN(i), HIGH);
         // 125Hz cycle
         delay(1); // delay to allow the leds to turn on
-        digitalWrite(MATRIX_ROW_PIN_START + i, LOW);
+        digitalWrite(MATRIX_ROW_PIN(i), LOW);
     }
 }

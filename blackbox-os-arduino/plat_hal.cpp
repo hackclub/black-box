@@ -46,7 +46,7 @@ void hal_matrix_get_arr(uint8_t out_arr[8]){
  * Get the state of a button
  */
 hal_button_state hal_button_get_state(hal_button button){
-    if(digitalRead(BUTTON_PIN_START + button) == HIGH){
+    if(digitalRead(BUTTON_PIN(button)) == HIGH){
         return HAL_BUTTON_STATE_UP;
     } else {
         return HAL_BUTTON_STATE_DOWN;
