@@ -179,7 +179,7 @@ async function compile_code(args) {
   const response = await fetch(compiler_endpoint + "/compile", {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code }),
+    body: JSON.stringify({ code, compileUF2: false }),
   });
   const { error, codeId } = await response.json();
   if (error) {
