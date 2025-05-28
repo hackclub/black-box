@@ -74,6 +74,7 @@ app.post('/compile', async (req, res) => {
                 "-s MODULARIZE=1 " +
                 "-s EXPORT_ES6=1 " +
                 `-s EXPORTED_FUNCTIONS="['_plat_init','_plat_tick']" ` +
+                "-sEXPORTED_RUNTIME_METHODS=HEAP8 " + // now needed for emscripten 4.0.7 (:
                 "-Werror=incompatible-function-pointer-types-strict"
             )
         } catch (err){
