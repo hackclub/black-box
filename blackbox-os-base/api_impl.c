@@ -9,8 +9,9 @@
 #include <stdio.h>
 
 /// Timing
-
-time_stamp millis() {
+// this is aliased to millis by defines around the user code in server.js
+// because otherwise it would conflict with the arduino millis function
+time_stamp bb_millis() { // actually called as millis()!
   return hal_millis();
 }
 

@@ -9,7 +9,7 @@
 EMSCRIPTEN_KEEPALIVE
 void plat_init() {
   executor_init();
-  setup(); // call into user setup
+  user_setup(); // call into user setup
 }
 
 extern void plat_get_events(uint8_t* events);
