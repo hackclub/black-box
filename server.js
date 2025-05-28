@@ -13,6 +13,7 @@ const port = process.env.PORT || 3000;
 
 // static files
 app.use('/editor', express.static('editor'));
+app.use('/gallery', express.static('gallery'));
 app.use('/assets', express.static('assets'));
 app.use('/intermediate_files', express.static('intermediate_files'));
 app.use('/examples', express.static('examples'));
