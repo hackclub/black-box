@@ -119,7 +119,7 @@ async function get_json(url) {
   return json;
 }
 
-function append_preview (section, code_url, matrix_color, preview_a, preview_b) {
+function append_preview (section, code_url, matrix_color, preview_a, preview_b, blue) {
   console.log(preview_a, preview_b);
   let a = document.createElement('a');
   a.setAttribute('href', code_url);
@@ -140,7 +140,8 @@ function append_preview (section, code_url, matrix_color, preview_a, preview_b) 
   const bits = bits_upper.concat(bits_lower).split('').map(Number);
   let cx = 4;
   let cy = 4;
-  const fill = matrix_color === 'Red' ? '#ef654d'
+  const fill = blue === true ? '#72cff7'
+    : matrix_color === 'Red' ? '#ef654d'
     : matrix_color === 'Yellow' ? '#fbb601'
     : '#c7e916';
   for (const bit of bits) {
@@ -175,6 +176,7 @@ function append_submission (submission) {
   const project_identifier = submission.fields['Project Identifier'];
   const slack_username = submission.fields['Slack Username'];
   const verb = submission.fields['Verb'];
+  const blue = submission.fields['Blue?'];
   // description (username + verb + identifier)
   let e_description = document.createElement('p');
   e_description.innerHTML = `<b>${slack_username}</b> ${verb} <b>${project_identifier}</b>`;
@@ -182,7 +184,7 @@ function append_submission (submission) {
   // let e_link = document.createElement('p');
   // e_link.innerHTML = `<a href="${code_url}">View in editor</a>`;
   e_section.appendChild(e_description);
-  append_preview(e_section, code_url, matrix_color, preview_a, preview_b);
+  append_preview(e_section, code_url, matrix_color, preview_a, preview_b, blue);
   // e_section.appendChild(e_link);
   document.getElementById('gallery_container').appendChild(e_section);
 }
