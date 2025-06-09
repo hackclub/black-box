@@ -7,7 +7,7 @@
 #define BUZZER_PIN 2
 // first 3 buttons are on gp20,21,22, then the other 2 are on gp26,27
 #define BUTTON_PIN(i) (i < 3 ? (i + 20) : (i - 3 + 26))
-#define DEBOUNCE_DELAY 75
+#define DEBOUNCE_DELAY 150
 
 // logging:
 #define DO_DEBUG_LOGGING 1
