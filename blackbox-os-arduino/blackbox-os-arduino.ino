@@ -113,7 +113,12 @@ void loop(){
 
   if (nextTimestamp <= now) delta = 0;
 
-  delay(delta);
+  while(millis()<now+delta){
+  if(ticking){
+    // there’s been an event that we need to handle
+    break;
+  }
+}
 }
 
 // an array to hold the current state of the matrix
@@ -125,7 +130,8 @@ void setup1() {
     // PERF: could reimplement this with PIO for best speed
     for (int i = 0; i < 8; i++) {
         pinMode(MATRIX_COL_PIN(i), OUTPUT);
-        digitalWrite(MATRIX_COL_PIN(i), LOW);
+        // TODO: should this come back?
+        // digitalWrite(MATRIX_COL_PIN(i), LOW);
     }
     for (int i = 0; i < 8; i++) {
         pinMode(MATRIX_ROW_PIN(i), OUTPUT);
@@ -154,15 +160,15 @@ void loop1() {
         uint8_t row_val = ardu_matrix_state[i];
         for (int j = 0; j < 8; j++) {
             if (row_val & (1 << (7 - j))) {
-                // the display is common anode, so LOW is on and HIGH is off
-                digitalWrite(MATRIX_COL_PIN(j), LOW);
-            } else {
+                // the display is common cathode, so HIGH is on and LOW is off
                 digitalWrite(MATRIX_COL_PIN(j), HIGH);
+            } else {
+                digitalWrite(MATRIX_COL_PIN(j), LOW);
             }
         }
-        digitalWrite(MATRIX_ROW_PIN(i), HIGH);
+        digitalWrite(MATRIX_ROW_PIN(i), LOW);
         // 125Hz cycle
         delay(1); // delay to allow the leds to turn on
-        digitalWrite(MATRIX_ROW_PIN(i), LOW);
+        digitalWrite(MATRIX_ROW_PIN(i), HIGH);
     }
 }
