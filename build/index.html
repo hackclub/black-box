@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Build | Black Box</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="build.css">
+    <script defer data-domain="blackbox.hackclub.com" src="https://plausible.io/js/script.js"></script>
+  </head>
+
+  <!--
+    PALMAM QUI MERUIT FERAT
+  -->
+
+  <body>
+    <div id="hero">
+      <h1>Build</h1>
+      <h4>
+        <a class="green" href="/">&lt; Back</a>
+      </h4>
+      <div id="black_box_container">
+        <div id="canvas_container">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div id="controls_container">
+          <button id="up" onpointerdown="up()" tabIndex="-1"></button>
+          <button id="down" tabIndex="-1"></button>
+          <button id="left" tabIndex="-1"></button>
+          <button id="right" tabIndex="-1"></button>
+          <button id="select" tabIndex="-1"></button>
+        </div>
+      </div>
+      <img id="arrow" src="/assets/arrow-down.svg">
+    </div>
+    <main>
+      <div class="section">
+        <p>
+          Looking for information on how to assemble your prize?
+          Or maybe you're a curious soul who wants to get involved after the fact?
+          <br>
+          <b>You're in the right place.</b>
+        </p>
+        <p>
+          On this page, you'll find detailed instructions on how to wire up your own Black Box device.
+          <br>
+          Do it right, and you'll be able to compile code written in <a href="/editor">the editor</a> and run it in the real world.
+        </p>
+        <p>
+          <b>This page is under construction!</b>
+          <br>
+          Check back soon.
+        </p>
+      </div>
+    </main>
+    <footer>
+      <center id="footer">
+        <p><span class="muted">(c)</span> 2025 <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a></p>
+        <p>Made with <img id="love" src="/assets/heart.svg"> by <a href="https://github.com/sporeball" target="_blank">@lux</a></p>
+      </center>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/victus@0.12.0/build/victus.min.js"></script>
+    <script src="build.js"></script>
+  </body>
+
+</html>
