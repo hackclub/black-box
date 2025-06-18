@@ -75,8 +75,20 @@ li {
   margin-left:16px
 }
 
-ol li {
+ul {
+  padding-bottom:16px;
+}
+
+li ul {
+  padding-bottom:0;
+}
+
+ul li, ol li {
   padding-bottom:16px
+}
+
+ul li ul li {
+  padding-bottom:0;
 }
 
 hr {
