@@ -605,6 +605,8 @@ e_toggle_running.onclick = async function () {
 e_build_uf2.onclick = async function () {
   const code = editor_view.state.doc.toString();
   console.log('[main] building uf2...');
+  e_status.className = 'warning';
+  e_status.innerHTML = 'Status: Building...';
   // grab the code and send it to the compiler
   const response = await fetch("/compile", {
     method: 'POST',
@@ -625,6 +627,10 @@ e_build_uf2.onclick = async function () {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+  e_status.className = '';
+  e_status.innerHTML = 'Status: Not running';
+  e_info_container.classList.remove('dn');
+  e_info.innerHTML = 'Downloaded .uf2';
 }
 
 async function init () {
