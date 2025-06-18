@@ -325,7 +325,34 @@ Be sure to *read the docs* and *view the example programs.*\\
 If you need help, ask in <a href="https://hackclub.slack.com/archives/C08APN1CKEJ" target="_blank">#black-box.</a>
 
 [Awesome!]`
-)
+);
+
+const v0_4_0 = new Message('v0_4_0',
+`## What's new?
+#### Version 0.4.0
+
+These features are now available:
+
+<ul>
+  <li>
+    **Build support** &ndash; Run your code in the real world, thanks to <a href="https://github.com/rivques" target="_blank">@rivques</a>
+    <ul>
+      <li>Wire up your own Black Box device, and you can flash a .uf2 file directly to it</li>
+      <li>Supports Raspberry Pi Pico and other RP2040-based devices</li>
+      <li>See <a href="/build" target="_blank">the build page</a> for more information</a></li>
+    </ul>
+  </li>
+</ul>
+
+These bugs have been fixed:
+
+<ul>
+  <li>Fixed an issue when passing certain types of function pointers (<a href="https://github.com/hackclub/black-box/pull/15" target="_blank">#15</a>)</li>
+  <li>npm packages now come from JSDelivr instead of UNPKG (<a href="https://github.com/hackclub/black-box/pull/16" target="_blank">#16</a>)</li>
+</ul>
+
+[Awesome!]`
+);
 
 export default {
   confirm_edit,
@@ -337,4 +364,5 @@ export default {
   v0_1_0,
   v0_2_0,
   v0_3_0,
+  v0_4_0,
 }
