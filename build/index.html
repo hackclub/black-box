@@ -200,6 +200,32 @@
         <p>If done correctly, the five buttons will correspond to <b class="red">up</b>, <b class="yellow">down</b>, <b class="green">left</b>, <b class="blue">right</b>, and <b class="muted">select</b>, respectively.</p>
         <p>At this point, your device is finished being assembled, and all that's left is to test it.</p>
       </div>
+      <div class="section">
+        <h1 class="red">Using your device</h1>
+        <h4 class="red">Fiat lux</h4>
+        <p>To test your device, you will need to open <a href="/editor">the editor</a>.</p>
+        <p>
+          Select the <span class="yellow">puzzle</span> example, then click <b>Build .uf2</b>.
+          <br>
+          This will create a <b>.uf2</b> file which can be flashed directly to your Raspberry Pi Pico.
+        </p>
+        <p>
+          Plug your USB cable into your Pico; then, while pressing the Pico's <b>BOOTSEL</b> button, plug it into your computer. Your Pico should then mount itself to your computer as a filesystem.
+          <br>
+          Drag the <b>.uf2</b> file into the Pico's filesystem; the filesystem will then disappear, and the example code should start running on your device immediately.
+        </p>
+        <!-- TODO: images, images, images! -->
+        <p>
+          Where wiring is concerned, the matrix should be positioned with the printed text facing <b>towards you</b>, but when using your device, the matrix should be positioned with the printed text facing <b>left.</b> With this in mind, try pressing each of the buttons on your device one at a time; you should see a different pattern on the LED matrix and hear a different tone from the piezo buzzer for each button you press.
+          <br>
+          If anything seems like it isn't working, double-check your wiring to make sure you've connected everything properly; if you need to make a wiring change, <b>unplug your Pico from your computer</b> first.
+          <br>
+          You don't need to hold down the <b>BOOTSEL</b> button every time you plug the Pico into your computer &ndash; only when you want to change the code that's running on it.
+        </p>
+        <p>
+          You should now have a working Black Box device, suitable for running code in the real world. Congratulations!
+        </p>
+      </div>
     </main>
     <footer>
       <center id="footer">
