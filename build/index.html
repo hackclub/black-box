@@ -73,7 +73,7 @@
         </p>
         <p>Depending on where your parts are coming from, some aspects may be different:</p>
         <ul>
-          <li>Prize recipients will be receiving two half-size breadboards; however, if you're sourcing from elsewhere, you may find it cheaper to buy a single full-size breadboard instead.</li>
+          <li>Prize recipients will be receiving three half-size breadboards; however, if you're sourcing from elsewhere, you may find it cheaper to buy two full-size breadboards instead.</li>
           <li>
             Prize recipients will be receiving an 8x8 LED matrix with the following pin assignments:
             <ul>
@@ -88,17 +88,35 @@
             If needed, you can check the datasheet for your matrix to find out which one you have.
           </li>
         </ul>
-        <p>The rest of this guide will assume that you are a <b>prize recipient.</b></p>
       </div>
       <div class="section">
-        <h1 class="yellow">The first board</h1>
-        <h4 class="yellow">Sic parvis magna</h4>
-        <p>Let's assemble the left half of the device first, including the Raspberry Pi Pico and the piezo buzzer.</p>
+        <h1 class="yellow">The shape</h1>
+        <h4 class="yellow">Vexata quaestio</h4>
+        <p>There are multiple possible ways to lay out your device.</p>
         <p>
-          Before you plug anything in, connect your two half-size breadboards horizontally so that they act like a full-size breadboard.
+          If your LED matrix is <b>0.8" square,</b> you will be able to assemble your device using either two half-size breadboards or one full-size breadboard.
           <br>
-          You can use a small utility knife to push back the plastic underneath the breadboards if needed, but do not remove it completely.
+          However, if your LED matrix is <b>1.2" square</b>, you will need to use either three half-size breadboards or two full-size breadboards to account for the difference in size.
+          <br>
+          If you are a <b>prize recipient,</b> your LED matrix is <b>1.2" square.</b>
         </p>
+        <p>The rest of this guide will assume that you are a <b>prize recipient.</b></p>
+        <p>
+          Take two of your half-size breadboards, and remove the <b>bottom</b> power rail from each one. Then, connect both of them together horizontally.
+          <br>
+          You can use a small utility knife to push back the plastic underneath the breadboards in order to remove the rails, but take care not to remove the plastic completely.
+        </p>
+        <p>
+          Next, take the third breadboard, and remove the <b>top</b> power rail from it.
+          <br>
+          Then, connect it vertically to the breadboard on the right.
+        </p>
+        <!-- TODO: there definitely needs to be an image here -->
+      </div>
+      <div class="section">
+        <h1 class="green">The left half</h1>
+        <h4 class="green">Sic parvis magna</h4>
+        <p>Let's assemble the left half of the device first, including the Raspberry Pi Pico and the piezo buzzer.</p>
         <p>
           Place your Raspberry Pi Pico at the far left of the first board, with half of the pins on either side of the ravine in the middle, and gently push it into the board until it is fully seated. The Pico's USB micro B port should be on the left.
           <br>
