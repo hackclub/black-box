@@ -130,13 +130,75 @@
         <img src="images/pico-pinout.svg">
         <p>The guide will refer to specific pins on this diagram.</p>
         <p>
-          Connect pin <b>38</b> on the Pico to <b class="blue">ground (-)</b> on the top of the first board.
+          Connect pin <b>38</b> <span class="muted">(GND)</span> on the Pico to <b class="blue">ground (-)</b> on the top of the first board.
           <br>
           Then, connect the <b>left</b> pin of the piezo buzzer to <b class="blue">ground (-)</b> as well.
           <br>
-          Finally, connect the <b>right</b> pin of the piezo buzzer to pin <b>4</b> on the Pico.
+          Finally, connect the <b>right</b> pin of the piezo buzzer to pin <b>4</b> <span class="green">(GP2)</span> on the Pico.
         </p>
         <p>All of the other components will be placed on the second board.</p>
+      </div>
+      <div class="section">
+        <h1 class="blue">The right half</h1>
+        <h4 class="blue">Finis coronat opus</h4>
+        <p>Let's assemble the right half of the device, including the buttons and LED matrix.</p>
+        <p>
+          Starting at the left edge of the second board (the one next to the Raspberry Pi Pico), place each of your five buttons in line with each other, with half of each button's pins on either side of the ravine in the middle.
+          <br>
+          After that, place your LED matrix at the right edge of the third board, making sure that the text printed on it is <b>facing you</b>, and gently push it into the board until it is fully seated.
+          <br>
+          It may take some time to get the matrix aligned before you are able to push it into the board. <b>Be very careful not to bend any of the pins on the matrix.</b>
+        </p>
+        <p>Next, we'll wire up the LED matrix.</p>
+        <p>If the text printed on the matrix is <b>facing you</b>, the pins on the matrix are laid out like this:</p>
+        <ul>
+          <li><b>Pin 1</b> is located in the <b>bottom left</b> corner</li>
+          <li><b>Pin 8</b> is located in the <b>bottom right</b> corner</li>
+          <li><b>Pin 9</b> is located in the <b>top right</b> corner</li>
+          <li><b>Pin 16</b> is located in the <b>top left</b> corner</li>
+        </ul>
+        <p>We'll wire up the columns first:</p>
+        <ul>
+          <li>Connect pin <b>6</b> <span class="green">(GP4)</span> on the Pico to pin <b>13</b> on the matrix.</li>
+          <li>Connect pin <b>7</b> <span class="green">(GP5)</span> on the Pico to pin <b>3</b> on the matrix.</li>
+          <li>Connect pin <b>9</b> <span class="green">(GP6)</span> on the Pico to pin <b>4</b> on the matrix.</li>
+          <li>Connect pin <b>10</b> <span class="green">(GP7)</span> on the Pico to pin <b>10</b> on the matrix.</li>
+          <li>Connect pin <b>11</b> <span class="green">(GP8)</span> on the Pico to pin <b>6</b> on the matrix.</li>
+          <li>Connect pin <b>12</b> <span class="green">(GP9)</span> on the Pico to pin <b>11</b> on the matrix.</li>
+          <li>Connect pin <b>14</b> <span class="green">(GP10)</span> on the Pico to pin <b>15</b> on the matrix.</li>
+          <li>Connect pin <b>15</b> <span class="green">(GP11)</span> on the Pico to pin <b>16</b> on the matrix.</li>
+        </ul>
+        <p>Then, we'll wire up the rows:</p>
+        <ul>
+          <li>Connect pin <b>16</b> <span class="green">(GP12)</span> on the Pico to pin <b>9</b> on the matrix.</li>
+          <li>Connect pin <b>17</b> <span class="green">(GP13)</span> on the Pico to pin <b>14</b> on the matrix.</li>
+          <li>Connect pin <b>19</b> <span class="green">(GP14)</span> on the Pico to pin <b>8</b> on the matrix.</li>
+          <li>Connect pin <b>20</b> <span class="green">(GP15)</span> on the Pico to pin <b>12</b> on the matrix.</li>
+          <li>Connect pin <b>21</b> <span class="green">(GP16)</span> on the Pico to pin <b>1</b> on the matrix.</li>
+          <li>Connect pin <b>22</b> <span class="green">(GP17)</span> on the Pico to pin <b>7</b> on the matrix.</li>
+          <li>Connect pin <b>24</b> <span class="green">(GP18)</span> on the Pico to pin <b>2</b> on the matrix.</li>
+          <li>Connect pin <b>25</b> <span class="green">(GP19)</span> on the Pico to pin <b>5</b> on the matrix.</li>
+        </ul>
+        <p>
+          Because of the unusual ordering of the rows and columns, getting each adjacent wire near the matrix to fit in place will take some time.
+          <br>
+          <b>Pay close attention</b> during this stage to make sure you make all the right connections.
+        </p>
+        <p>Finally, we'll wire up the five buttons.</p>
+        <p>
+          Connect the <b>bottom left</b> pin of each button to <b class="blue">ground (-)</b>.
+          <br>
+          Then, connect the <b>top right</b> pin of each button as follows:
+        </p>
+        <ul>
+          <li>Connect pin <b>26</b> <span class="green">(GP20)</span> on the Pico to button <b>1.</b></li>
+          <li>Connect pin <b>27</b> <span class="green">(GP21)</span> on the Pico to button <b>2.</b></li>
+          <li>Connect pin <b>29</b> <span class="green">(GP22)</span> on the Pico to button <b>3.</b></li>
+          <li>Connect pin <b>31</b> <span class="green">(GP26)</span> on the Pico to button <b>4.</b></li>
+          <li>Connect pin <b>32</b> <span class="green">(GP27)</span> on the Pico to button <b>5.</b></li>
+        </ul>
+        <p>If done correctly, the five buttons will correspond to <b class="red">up</b>, <b class="yellow">down</b>, <b class="green">left</b>, <b class="blue">right</b>, and <b class="muted">select</b>, respectively.</p>
+        <p>At this point, your device is finished being assembled, and all that's left is to test it.</p>
       </div>
     </main>
     <footer>
