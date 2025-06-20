@@ -51,6 +51,7 @@
           Do it right, and you'll be able to compile code written in <a href="/editor">the editor</a> and run it in the real world.
         </p>
         <p>Ready? Let's go.</p>
+        <p class="muted">(Something wrong with this guide? <a href="https://github.com/hackclub/black-box/issues" target="_blank">Open an issue!</a>)</p>
       </div>
       <div class="section">
         <h1 class="red">What you need</h1>
@@ -88,6 +89,36 @@
           </li>
         </ul>
         <p>The rest of this guide will assume that you are a <b>prize recipient.</b></p>
+      </div>
+      <div class="section">
+        <h1 class="yellow">The first board</h1>
+        <h4 class="yellow">Sic parvis magna</h4>
+        <p>Let's assemble the left half of the device first, including the Raspberry Pi Pico and the piezo buzzer.</p>
+        <p>
+          Before you plug anything in, connect your two half-size breadboards horizontally so that they act like a full-size breadboard.
+          <br>
+          You can use a small utility knife to push back the plastic underneath the breadboards if needed, but do not remove it completely.
+        </p>
+        <p>
+          Place your Raspberry Pi Pico at the far left of the first board, with half of the pins on either side of the ravine in the middle, and gently push it into the board until it is fully seated. The Pico's USB micro B port should be on the left.
+          <br>
+          Then, place your piezo buzzer in the remaining space on the first board, making sure its two pins are in line with each other horizontally.
+        </p>
+        <p>
+          Next, let's add a few wires to the first board.
+          <br>
+          You will want to keep the following image around from now on:
+        </p>
+        <img src="images/pico-pinout.svg">
+        <p>The guide will refer to specific pins on this diagram.</p>
+        <p>
+          Connect pin <b>38</b> on the Pico to <b class="blue">ground (-)</b> on the top of the first board.
+          <br>
+          Then, connect the <b>left</b> pin of the piezo buzzer to <b class="blue">ground (-)</b> as well.
+          <br>
+          Finally, connect the <b>right</b> pin of the piezo buzzer to pin <b>4</b> on the Pico.
+        </p>
+        <p>All of the other components will be placed on the second board.</p>
       </div>
     </main>
     <footer>
