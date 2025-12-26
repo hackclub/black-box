@@ -221,7 +221,7 @@ const launch = new Message('launch',
 
 **Welcome to the Black Box editor!**
 
-This is what you'll be using to design and test your submission for Black Box. It won't be easy, but I know you can do it!\\
+This is the place to design and test Black Box programs. It might seem difficult, but I know you can do it!\\
 *Read the docs*, *ask questions*, and above all, **try your best!**
 
 If you'd like to **report a bug in the editor** that *prevents your code from working* the way it should, or you'd like to **request a feature** that the editor is missing, you can do so using the <b class="red">Feedback</b> link at the top of the page.\\
