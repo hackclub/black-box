@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2",
+    "express": "^4.22.2",
     "express-rate-limit": "^7.5.0",
     "minimist": "^1.2.8",
     "morgan": "^1.10.0"
